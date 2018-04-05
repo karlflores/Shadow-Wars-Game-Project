@@ -1,8 +1,16 @@
 import org.newdawn.slick.Input;
-
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 public class Sprite {
-	public Sprite(String imageSrc, float x, float y) {
+
+	private float x;
+	private float y;
+	private Image image;
+	public Sprite(String imageSrc, float x, float y) throws SlickException {
 		// Why would the constructor need a path to an image, and a coordinate?
+		this.x = x;
+		this.y = y;
+		this.image = new Image(imageSrc);
 	}
 	
 	public void update(Input input, int delta) {
