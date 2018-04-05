@@ -7,10 +7,9 @@ public class World {
     //indicating the size of the background array -- 4 parts + 2 parts for the sub images
     private int BACKGROUND_ARRAY_SIZE = 4;
     // how many pixels the background moves each update
-    private float BG_MOVE_DIST = (float)0.2;
+    private float BG_OFFSET_PER_SEC = (float)0.2;
     private float bgMovement;
 
-    private int SCREEN_HEIGHT = 786;
 
 	public World() throws SlickException {
 		// Perform initialisation logic
@@ -36,7 +35,7 @@ public class World {
           rate of 0.2px/ms -- the max that the background can move is 512px
           before it resets to 0
           */
-        bgMovement=(bgMovement+BG_MOVE_DIST/delta)%this.background[0].getHeight();
+        bgMovement=(bgMovement+BG_OFFSET_PER_SEC/delta)%this.background[0].getHeight();
 	}
 	
 	public void render() {
