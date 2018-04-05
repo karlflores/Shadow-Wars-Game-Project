@@ -25,3 +25,4 @@ public class Sprite {
 		// Should be called when one sprite makes contact with another. 
 	}
 }
+
