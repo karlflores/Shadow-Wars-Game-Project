@@ -1,15 +1,25 @@
+import org.lwjgl.Sys;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 public class World {
     //BACKGROUND DATA
     private Image[] background;
+    private int SCREEN_WIDTH  = 768;
     //indicating the size of the background array -- 4 parts + 2 parts for the sub images
     private int BACKGROUND_ARRAY_SIZE = 4;
     // how many pixels the background moves each update
     private float BG_OFFSET_PER_SEC = (float)0.2;
     private float bgMovement;
 
+    private int NUM_ENEMIES = 8;
+    private int enemiesKilled = 0;
+    private boolean gameOver = false;
+    private String ENEMY_IMG_PATH = "res/basic-enemy.png";
+    private String PLAYER_IMG_PATH = "res/spaceship.png";
+
+    private Player player;
+    private Enemy[] enemies;
 
 	public World() throws SlickException {
 		// Perform initialisation logic
@@ -19,14 +29,23 @@ public class World {
         for(int i = 0; i < BACKGROUND_ARRAY_SIZE ; i++ ) {
             this.background[i] = new Image("res/space.png");
         }
-        //s et the initial background movement to 0 px -- every update we want this to increase by 0.2
+        //set the initial background movement to 0 px -- every update we want this to increase by 0.2
         // max movement is 512 px -- then we want to reset this to being 0px
         this.bgMovement = 0;
+
+        //set the number of enemies in the world;
+        this.enemies = new Enemy[NUM_ENEMIES];
+        for(int i = 0;i < NUM_ENEMIES;i++){
+            enemies[i] = new Enemy(ENEMY_IMG_PATH,32+(128)*i,32);
+        }
+
+        // set the player and its location in the world
+        this.player = new Player(PLAYER_IMG_PATH,480,688);
 
 
 	}
 	
-	public void update(Input input, int delta) {
+	public void update(Input input, int delta) throws SlickException{
 		// Update all of the sprites in the game
 
         //Update the Background Parameters
@@ -35,12 +54,52 @@ public class World {
           rate of 0.2px/ms -- the max that the background can move is 512px
           before it resets to 0
           */
-        bgMovement=(bgMovement+BG_OFFSET_PER_SEC/delta)%this.background[0].getHeight();
+        bgMovement=(bgMovement+BG_OFFSET_PER_SEC*delta)%this.background[0].getHeight();
+
+        // update the player;
+
+        player.update(input,delta);
+
+        // update all the enemies
+        Laser[] lasersArr = player.getLasersArr();
+        for(int i = 0;i < player.getNumLasersFired(); i++){
+           // System.out.println(lasersArr[i].getX());
+           // System.out.println(lasersArr[i].getY());
+        }
+        for (Enemy enemy : enemies) {
+            for(int i = 0;i < player.getNumLasersFired(); i++) {
+                if(lasersArr[i].makesContact(enemy) && enemy.getIsAlive()) {
+                    enemy.contactSprite(lasersArr[i]);
+                    System.out.println("made contact");
+
+                    //kill the enemy
+                    enemy.killEnemy();
+                    this.enemiesKilled++;
+                }
+
+                enemy.update(input, delta);
+            }
+            if(player.makesContact(enemy)){
+                player.contactSprite(enemy);
+            }
+        }
+
+        if(enemiesKilled == NUM_ENEMIES){
+            this.gameOver = true;
+        }
 	}
 	
 	public void render() {
 		// Draw all of the sprites in the game
         drawBackground();
+
+        // draw the player
+        player.render();
+        // draw the enemies
+        for(Enemy enemy : enemies){
+            enemy.render();
+        }
+
 	}
 	private void drawBackground(){
 	    //need to tile the background into 4 parts
@@ -52,10 +111,8 @@ public class World {
         updateBackgroundScroll(background[3],background[3].getHeight()+1,background[3].getHeight()+1);
     }
     private void updateBackgroundScroll(Image background,int x,int y){
-	    //check if background is not Null
 	    //split up the background segment into two segments -- the part that is moved down,
         // the part that is cropped and should be rendered at the top of the original segment
-
         // we then print the part that is on the screen at the bottom, then print the part that is off the screen
         // at the bottom part of that segment
 
@@ -68,5 +125,13 @@ public class World {
         //print the original segment below the split off segment using the specified location on the app (x,y)
         splitOriginalSegment.draw(x,y+bgMovement);
         splitCropSegment.draw(x,y);
+    }
+
+    public boolean isGameOver(){
+	    if(this.gameOver){
+	        return true;
+        }else{
+	        return false;
+        }
     }
 }
