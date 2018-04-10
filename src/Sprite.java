@@ -42,7 +42,6 @@ public class Sprite {
             return;
         }
         // set the bounding box of the image to update to the new location of the sprite and image
-        System.out.format("%f %f\n",this.x,this.y);
         this.bb.setX(this.x);
         this.bb.setY(this.y);
         // each of the sub classes will have an update method that overrides this method;
