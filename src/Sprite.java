@@ -5,16 +5,21 @@ import org.newdawn.slick.SlickException;
 import utilities.BoundingBox;
 
 public class Sprite {
-
-    private float EPS = 1E-5f;
+    // app data
     private float SCREEN_HEIGHT = 768f;
     private float SCREEN_WIDTH = 1024f;
 
+    // sprite data
 	private float x;
 	private float y;
 	private Image image;
 	private BoundingBox bb;
-	private boolean renderImage;
+
+	/*
+	* a sprite exists if it has not been killed and therefore should be rendered to the screen and
+	* its parameters updated
+    */
+    private boolean exists;
 
 	public Sprite(String imageSrc, float x, float y) throws SlickException {
 		// Why would the constructor need a path to an image, and a coordinate?
@@ -26,12 +31,16 @@ public class Sprite {
 		this.bb = new BoundingBox(this.image,x,y);
 
 		// when a sprite is created it should be rendered to the screen
-		this.renderImage = true;
+		this.exists = true;
 
 	}
 	
 	public void update(Input input, int delta) throws SlickException{
 		// How can this one method deal with different types of sprites?
+        // if the sprite exists update it
+        if(!this.exists){
+            return;
+        }
         // set the bounding box of the image to update to the new location of the sprite and image
         System.out.format("%f %f\n",this.x,this.y);
         this.bb.setX(this.x);
@@ -42,7 +51,7 @@ public class Sprite {
 	public void render() {
 		// This should be pretty simple.
         // draw the image if it has not been destroyed.
-        if(this.renderImage) {
+        if(this.exists) {
             image.draw(x, y);
         }
 
@@ -50,42 +59,10 @@ public class Sprite {
 	
 	public void contactSprite(Sprite other) {
 		// Should be called when one sprite makes contact with another.
-        other.setRenderState(false);
-        this.setRenderState(false);
+        // sets the exist state of both sprites
+        other.exists = false;
+        this.exists = false;
 	}
-
-	public void setX(float x){
-	    if(x >= 0 && x <= SCREEN_WIDTH-this.image.getWidth()){
-	        this.x = x;
-        }
-    }
-
-    // setters and getters
-    public void setY(float y){
-	    if(y >= 0 && y<=SCREEN_HEIGHT-this.image.getHeight()){
-	        this.y = y;
-        }
-    }
-    public float getX(){
-	    return this.x;
-    }
-    public float getY(){
-	    return this.y;
-    }
-    public void setRenderState(boolean value){
-	    this.renderImage = value;
-    }
-
-    public boolean getRenderState() {
-        return this.renderImage;
-    }
-
-    public int getHeight(){
-	    return image.getHeight();
-    }
-    public int getWidth(){
-	    return image.getWidth();
-    }
 
     //tests whether a collision as occurred
     public boolean makesContact(Sprite other){
@@ -99,8 +76,39 @@ public class Sprite {
         }
     }
 
-    public BoundingBox getBB(){
-	    return this.bb;
+    // setters and getters
+    // location setters
+	public void setX(float x){
+	    if(x >= 0 && x <= SCREEN_WIDTH-this.image.getWidth()){
+	        this.x = x;
+        }
+    }
+
+    public void setY(float y){
+	    if(y >= 0 && y<=SCREEN_HEIGHT-this.image.getHeight()){
+	        this.y = y;
+        }
+    }
+    // location getters
+    public float getX(){
+	    return this.x;
+    }
+    public float getY(){
+	    return this.y;
+    }
+
+    public boolean getExistState(){
+        return this.exists;
+    }
+    public void setExistState(boolean value){
+        this.exists = value;
+    }
+    // gets the height and width of the image
+    public int getHeight(){
+	    return image.getHeight();
+    }
+    public int getWidth(){
+	    return image.getWidth();
     }
 }
 

@@ -35,7 +35,7 @@ public class BoundingBox {
 	 * Sets the x and y position at the centre of the bounding box.
 	 */
 	public void setX(float x) {
-		left = x - width / 2;
+		left = x;
 	}
 	public void setY(float y) {
 		top = y - height / 2;
