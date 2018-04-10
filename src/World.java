@@ -38,11 +38,8 @@ public class World {
         for(int i = 0;i < NUM_ENEMIES;i++){
             enemies[i] = new Enemy(ENEMY_IMG_PATH,32+(128)*i,32);
         }
-
         // set the player and its location in the world
         this.player = new Player(PLAYER_IMG_PATH,480,688);
-
-
 	}
 	
 	public void update(Input input, int delta) throws SlickException{
@@ -56,37 +53,40 @@ public class World {
           */
         bgMovement=(bgMovement+BG_OFFSET_PER_SEC*delta)%this.background[0].getHeight();
 
-        // update the player;
-
-        player.update(input,delta);
-
         // update all the enemies
         Laser[] lasersArr = player.getLasersArr();
-        for(int i = 0;i < player.getNumLasersFired(); i++){
-           // System.out.println(lasersArr[i].getX());
-           // System.out.println(lasersArr[i].getY());
-        }
-        for (Enemy enemy : enemies) {
-            for(int i = 0;i < player.getNumLasersFired(); i++) {
-                if(lasersArr[i].makesContact(enemy) && enemy.getIsAlive()) {
-                    enemy.contactSprite(lasersArr[i]);
+
+        // loop through each of the lasers that have been fired
+       // for(int i = 0;i < player.getNumLasersFired(); i++){
+           //System.out.print(lasersArr[i].getX());
+           //System.out.println(lasersArr[i].getY());
+       // }
+
+        // loop through each of the enemies and check if they have been contacted with another sprite
+        for (int i = 0; i < this.NUM_ENEMIES; i++) {
+            for(int j = 0;j < player.getNumLasersFired(); j++) {
+                if(lasersArr[j].makesContact(enemies[i]) && enemies[i].getIsAlive()) {
+                    enemies[i].contactSprite(lasersArr[j]);
+                    enemies[i].killEnemy();
                     System.out.println("made contact");
 
-                    //kill the enemy
-                    enemy.killEnemy();
-                    this.enemiesKilled++;
                 }
-
-                enemy.update(input, delta);
+                if(enemies[i].getIsAlive()) {
+                    enemies[i].update(input, delta);
+                }
             }
-            if(player.makesContact(enemy)){
-                player.contactSprite(enemy);
+            if(player.makesContact(enemies[i])){
+                enemies[i].contactSprite(player);
+                this.gameOver = true;
             }
         }
 
-        if(enemiesKilled == NUM_ENEMIES){
+        if(numEnemiesKilled() == NUM_ENEMIES){
             this.gameOver = true;
         }
+
+        // update the player;
+        player.update(input,delta);
 	}
 	
 	public void render() {
@@ -97,7 +97,9 @@ public class World {
         player.render();
         // draw the enemies
         for(Enemy enemy : enemies){
-            enemy.render();
+            if(enemy.getRenderState()) {
+                enemy.render();
+            }
         }
 
 	}
@@ -133,5 +135,15 @@ public class World {
         }else{
 	        return false;
         }
+    }
+
+    private int numEnemiesKilled(){
+	    int killed = 0;
+	    for(Enemy enemy: enemies){
+	        if(!enemy.getIsAlive()){
+	            killed++;
+            }
+        }
+        return killed;
     }
 }

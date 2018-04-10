@@ -51,7 +51,7 @@ public class BoundingBox {
 		return left;
 	}
 	public float getTop() {
-		return left;
+		return top;
 	}
 	public float getRight() {
 		return left + width;
@@ -68,9 +68,15 @@ public class BoundingBox {
 	}
 	
 	public boolean intersects(BoundingBox other) {
+	//	System.out.println("check intersection");
 		return !(other.left > getRight()
 			  || other.getRight()  < left
 			  || other.top > getBottom()
 			  || other.getBottom() < top);
+	}
+
+	public void printBB(BoundingBox other){
+		System.out.format("THIS T: %f B: %f L: %f R: %f\n",width,height,left,top);
+		System.out.format("OTHER T: %f B: %f L: %f R: %f\n",other.width,other.height,other.left,other.top);
 	}
 }

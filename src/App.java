@@ -42,9 +42,13 @@ public class App extends BasicGame {
         // Get data about the current input (keyboard state).
         Input input = gc.getInput();
         world.update(input, delta);
+
+        // exit the game if the game is determined to be over
         if(world.isGameOver()){
             gc.exit();
         }
+
+        // if escape is hit we exit the game
         if(input.isKeyDown(Input.KEY_ESCAPE)){
             gc.exit();
         }

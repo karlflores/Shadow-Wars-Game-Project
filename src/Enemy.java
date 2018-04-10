@@ -13,10 +13,10 @@ public class Enemy extends Sprite{
     public boolean getIsAlive(){
         return isAlive;
     }
+    /*
     public void update(Input input,int delta) throws SlickException{
-        if(!isAlive){
-            this.destroyImage();
-        }
+
     }
+    */
 
 }
