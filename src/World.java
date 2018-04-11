@@ -8,17 +8,25 @@ public class World {
     //indicating the size of the background array -- 4 parts + 2 parts for the sub images
     private static int BACKGROUND_ARRAY_SIZE = 4;
     // how many pixels the background moves each update
-    private static float BG_OFFSET_PER_SEC = (float)0.2;
+    private static float BG_OFFSET_PER_SEC = 0.2f;
     private float bgMovement;
 
     // enemy data
     private static int NUM_ENEMIES = 8;
     private boolean gameOver = false;
-    private String ENEMY_IMG_PATH = "res/basic-enemy.png";
     private Enemy[] enemies;
-    //player data
-    private String PLAYER_IMG_PATH = "res/spaceship.png";
+    //CONSTANTS
+    private static String ENEMY_IMG_PATH = "res/basic-enemy.png";
+    private static int ENEMY_SPACING_PX = 128;
+    private static int START_ENEMY_XPOS = 32;
+    private static int START_ENEMY_YPOS = 32;
+
+    // player data
     private Player player;
+    // CONSTANTS
+    private static String PLAYER_IMG_PATH = "res/spaceship.png";
+    private static int INIT_PLAYER_XPOS = 488;
+    private static int INIT_PLAYER_YPOS = 640;
 
 	public World() throws SlickException {
 
@@ -35,10 +43,12 @@ public class World {
         // specified locations
         this.enemies = new Enemy[NUM_ENEMIES];
         for(int i = 0;i < NUM_ENEMIES;i++){
-            enemies[i] = new Enemy(ENEMY_IMG_PATH,32+(128)*i,32);
+            // create each enemy and space the enemies out on screen based on an initial position
+            // and an px-spacing between each enemy
+            enemies[i] = new Enemy(ENEMY_IMG_PATH,START_ENEMY_XPOS+(ENEMY_SPACING_PX)*i,START_ENEMY_YPOS);
         }
-        // set the player and its location in the world
-        this.player = new Player(PLAYER_IMG_PATH,480,688);
+        // set the player and its initial location in the world
+        this.player = new Player(PLAYER_IMG_PATH,INIT_PLAYER_XPOS,INIT_PLAYER_YPOS);
 	}
 	
 	public void update(Input input, int delta) throws SlickException{
@@ -50,7 +60,7 @@ public class World {
           */
         bgMovement=(bgMovement+BG_OFFSET_PER_SEC*delta)%this.background[0].getHeight();
 
-        // update all the enemies
+        // get the array of lasers for checking collisions
         Laser[] lasersArr = player.getLasersArr();
 
         // loop through each of the enemies and check if they have been contacted with another sprite
@@ -65,6 +75,7 @@ public class World {
                 if(!lasersArr[j].getExistState()){
                     continue;
                 }
+                // check for collision
                 if(lasersArr[j].makesContact(enemies[i])) {
                     enemies[i].contactSprite(lasersArr[j]);
                 }
@@ -133,7 +144,7 @@ public class World {
     // helper method to return the number of enemies currently killed in a game
     private int numEnemiesKilled(){
 	    int killed = 0;
-	    for(Enemy enemy: enemies){
+	    for(Enemy enemy: this.enemies){
 	        if(!enemy.getExistState()){
 	            killed++;
             }

@@ -4,7 +4,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import utilities.BoundingBox;
 
-public class Sprite {
+public abstract class Sprite {
 
     // sprite data
 	private float x;
