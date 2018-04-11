@@ -1,7 +1,7 @@
 import org.lwjgl.Sys;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Input;
-
+// Implementation of the player class as an extension of the sprite class
 public class Player extends Sprite{
 
     //constants
