@@ -5,8 +5,8 @@ import org.newdawn.slick.Input;
 public class Player extends Sprite{
 
     //constants
-    private float MOVE_RATE = 0.5f;
-    private int MAX_NUM_LASER = 100;
+    private static float MOVE_RATE = 0.5f;
+    private static int MAX_NUM_LASER = 100;
 
     // laser data
     private Laser[] laserArr;

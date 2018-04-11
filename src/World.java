@@ -6,13 +6,13 @@ public class World {
     //BACKGROUND DATA
     private Image[] background;
     //indicating the size of the background array -- 4 parts + 2 parts for the sub images
-    private int BACKGROUND_ARRAY_SIZE = 4;
+    private static int BACKGROUND_ARRAY_SIZE = 4;
     // how many pixels the background moves each update
-    private float BG_OFFSET_PER_SEC = (float)0.2;
+    private static float BG_OFFSET_PER_SEC = (float)0.2;
     private float bgMovement;
 
     // enemy data
-    private int NUM_ENEMIES = 8;
+    private static int NUM_ENEMIES = 8;
     private boolean gameOver = false;
     private String ENEMY_IMG_PATH = "res/basic-enemy.png";
     private Enemy[] enemies;

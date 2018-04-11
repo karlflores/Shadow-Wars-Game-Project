@@ -5,9 +5,6 @@ import org.newdawn.slick.SlickException;
 import utilities.BoundingBox;
 
 public class Sprite {
-    // app data
-    private float SCREEN_HEIGHT = 768f;
-    private float SCREEN_WIDTH = 1024f;
 
     // sprite data
 	private float x;
@@ -78,13 +75,13 @@ public class Sprite {
     // setters and getters
     // location setters
 	public void setX(float x){
-	    if(x >= 0 && x <= SCREEN_WIDTH-this.image.getWidth()){
+	    if(x >= 0 && x <= App.SCREEN_WIDTH-this.image.getWidth()){
 	        this.x = x;
         }
     }
 
     public void setY(float y){
-	    if(y >= 0 && y<=SCREEN_HEIGHT-this.image.getHeight()){
+	    if(y >= 0 && y<=App.SCREEN_HEIGHT-this.image.getHeight()){
 	        this.y = y;
         }
     }
