@@ -13,7 +13,8 @@ public class Player extends Sprite{
     private String laserImgSrc = "res/shot.png";
     private int numLaserFired;
 
-    public Player(String imageSrc,float x,float y) throws SlickException {
+    // Constructor
+    public Player(String imageSrc,float x,float y) throws SlickException{
         // update the player
         super(imageSrc,x,y);
         // create the array of lasers
@@ -21,6 +22,7 @@ public class Player extends Sprite{
         this.numLaserFired = 0;
 
     }
+
     // update method
     public void update(Input input ,int delta) throws SlickException{
         // only update the player if it exists
@@ -90,10 +92,12 @@ public class Player extends Sprite{
             }
         }
     }
+
     // getter and setter methods
     public int getNumLasersFired(){
         return this.numLaserFired;
     }
+
     public Laser[] getLasersArr(){
         return this.laserArr;
     }

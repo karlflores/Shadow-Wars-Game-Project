@@ -32,7 +32,7 @@ public abstract class Sprite {
 
 	}
 	
-	public void update(Input input, int delta) throws SlickException{
+	public  void update(Input input, int delta) throws SlickException{
 		// How can this one method deal with different types of sprites?
         // if the sprite exists update it
         if(!this.exists){
@@ -42,6 +42,12 @@ public abstract class Sprite {
         this.bb.setX(this.x);
         this.bb.setY(this.y);
         // each of the sub classes will have an update method that overrides this method;
+
+        /*
+        For all updates if we want to make sure that it updates by x pixels per millisecond.
+        Since delta is the number of ms since the last frame update therefore x*delta is the
+        number pixels it should move on this update
+         */
 	}
 
 	public void render() {

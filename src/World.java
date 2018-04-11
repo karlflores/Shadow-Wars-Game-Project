@@ -28,6 +28,7 @@ public class World {
     private static int INIT_PLAYER_XPOS = 488;
     private static int INIT_PLAYER_YPOS = 640;
 
+    // constructor
 	public World() throws SlickException {
 
         // Background parameter initialisation
@@ -50,9 +51,10 @@ public class World {
         // set the player and its initial location in the world
         this.player = new Player(PLAYER_IMG_PATH,INIT_PLAYER_XPOS,INIT_PLAYER_YPOS);
 	}
-	
+
+	// override the sprite method
 	public void update(Input input, int delta) throws SlickException{
-        //Update the Background Parameters
+        // Update the Background Parameters
         /*
           every time we want to update we want to move the background down at
           rate of 0.2px/ms -- the max that the background can move is 512px
