@@ -50,8 +50,17 @@ public class Player extends Sprite{
         // laser fired if space bar is hit
         if(input.isKeyPressed(Input.KEY_SPACE)){
             // create a new laser at the middle of the current location of the player
-            this.laserArr[numLaserFired] = new Laser(this.laserImgSrc,this.getX()+this.getWidth()/2-8,
-                    this.getY()+this.getHeight()/2-8);
+            this.laserArr[numLaserFired] = new Laser(this.laserImgSrc,this.getX()+this.getWidth()/2,
+                    this.getY()+this.getHeight()/2);
+
+            // edit the location of the laser to be correctly centered according to the middle of the laser sprite
+            float currLaserPosX = this.laserArr[numLaserFired].getX();
+            float currLaserPosY = this.laserArr[numLaserFired].getY();
+            float offsetX = this.laserArr[numLaserFired].getWidth()/2;
+            float offsetY = this.laserArr[numLaserFired].getHeight()/2;
+            // reset the laser position
+            this.laserArr[numLaserFired].setX(currLaserPosX - offsetX);
+            this.laserArr[numLaserFired].setY(currLaserPosY - offsetY);
 
             // increment the number of laser shots fired  -- wrap it to the max laser shots to overwrite the
             // old laser shots if it comes to this point;
