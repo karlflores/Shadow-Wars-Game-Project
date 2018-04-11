@@ -64,7 +64,6 @@ public class Sprite {
     public boolean makesContact(Sprite other){
         //use the bounding boxes created when instantiating the sprite to check for collisions
         if(this.bb.intersects(other.bb)){
-            System.out.println("THIS HAS MADE CONTACT");
             return true;
         }else{
             //System.out.println("check intersection - false");

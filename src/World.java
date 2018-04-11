@@ -55,15 +55,21 @@ public class World {
 
         // loop through each of the enemies and check if they have been contacted with another sprite
         for (int i = 0; i < this.NUM_ENEMIES; i++){
+            // skip over the enemies that do not exist on the world anymore
+            if(!enemies[i].getExistState()){
+                continue;
+            }
             // loop through all the lasers that have currently been fired
             for(int j = 0;j < player.getNumLasersFired(); j++) {
-                if(lasersArr[j].makesContact(enemies[i]) && enemies[i].getExistState()) {
+                // skip all the laser that do not exist anymore
+                if(!lasersArr[j].getExistState()){
+                    continue;
+                }
+                if(lasersArr[j].makesContact(enemies[i])) {
                     enemies[i].contactSprite(lasersArr[j]);
                 }
                 // if the enemy exists we should update it
-                if(enemies[i].getExistState()) {
-                    enemies[i].update(input, delta);
-                }
+                enemies[i].update(input, delta);
             }
             // checks if the player makes contact with the enemy
             if(player.makesContact(enemies[i])){
