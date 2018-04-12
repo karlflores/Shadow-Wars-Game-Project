@@ -101,4 +101,12 @@ public class Player extends Sprite{
     public Laser[] getLasersArr(){
         return this.laserArr;
     }
+
+    // override setY()
+    public void setY(float y){
+        // the player cannot move past the top of the screen;
+        if(y>=0){
+            super.setY(y);
+        }
+    }
 }

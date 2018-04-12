@@ -32,8 +32,8 @@ public class BoundingBox {
 	}
 	
 	/*
-	 * Sets the x and y position at the centre of the bounding box.
-	 */
+	 * Sets the y position to the center of the image -- the x location is unchanged
+	*/
 	public void setX(float x) {
 		left = x;
 	}

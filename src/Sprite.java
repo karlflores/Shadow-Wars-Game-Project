@@ -79,14 +79,17 @@ public abstract class Sprite {
 
     // setters and getters
     // location setters
+
+    // within the width of the screen
 	public void setX(float x){
 	    if(x >= 0 && x <= App.SCREEN_WIDTH-this.image.getWidth()){
 	        this.x = x;
         }
     }
 
+    // set y
     public void setY(float y){
-	    if(y >= 0 && y<=App.SCREEN_HEIGHT-this.image.getHeight()){
+	    if(y<=App.SCREEN_HEIGHT-this.getHeight()){
 	        this.y = y;
         }
     }

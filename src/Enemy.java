@@ -6,5 +6,10 @@ public class Enemy extends Sprite{
     public Enemy(String imageSrc, float x, float y) throws SlickException{
         super(imageSrc,x,y);
     }
-    // allows for further abstraction and functions for the enemy player when needed
+    // override setY() -- ensure that the enemy is located within the bounds of the board
+    public void setY(float y){
+        if(y>=0){
+            super.setY(y);
+        }
+    }
 }
