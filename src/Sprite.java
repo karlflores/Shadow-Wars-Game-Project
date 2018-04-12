@@ -101,6 +101,7 @@ public abstract class Sprite {
 	    return y;
     }
 
+    // does this sprite exist on the screen -- used to handle updates to the object
     public boolean getExistState(){
         return this.exists;
     }
