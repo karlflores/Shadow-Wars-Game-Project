@@ -18,15 +18,15 @@ public class Player extends Sprite{
         // update the player
         super(imageSrc,x,y);
         // create the array of lasers
-        this.laserArr = new Laser[256];
-        this.numLaserFired = 0;
+        laserArr = new Laser[256];
+        numLaserFired = 0;
 
     }
 
     // update method
     public void update(Input input ,int delta) throws SlickException{
         // only update the player if it exists
-        if(!this.getExistState()){
+        if(!getExistState()){
             return;
         }
         super.update(input,delta);
@@ -34,35 +34,35 @@ public class Player extends Sprite{
         // move according to key presses
         if(input.isKeyDown(Input.KEY_UP)){
             // move up -- decrease Y
-            this.setY(this.getY()-MOVE_RATE*delta);
+            setY(getY()-MOVE_RATE*delta);
         }
         if(input.isKeyDown(Input.KEY_DOWN)){
             // move down -- increase Y
-            this.setY(this.getY()+MOVE_RATE*delta);
+            setY(getY()+MOVE_RATE*delta);
         }
         if(input.isKeyDown(Input.KEY_LEFT)){
             // move left -- decrease X
-            this.setX(this.getX()-MOVE_RATE*delta);
+            setX(getX()-MOVE_RATE*delta);
         }
         if(input.isKeyDown(Input.KEY_RIGHT)){
             // move right -- increase X
-            this.setX(this.getX()+MOVE_RATE*delta);
+            setX(getX()+MOVE_RATE*delta);
         }
 
         // laser fired if space bar is hit
         if(input.isKeyPressed(Input.KEY_SPACE)){
             // create a new laser at the middle of the current location of the player
-            this.laserArr[numLaserFired] = new Laser(this.laserImgSrc,this.getX()+this.getWidth()/2,
-                    this.getY()+this.getHeight()/2);
+            laserArr[numLaserFired] = new Laser(laserImgSrc,getX()+getWidth()/2,
+                    getY()+getHeight()/2);
 
             // edit the location of the laser to be correctly centered according to the middle of the laser sprite
-            float currLaserPosX = this.laserArr[numLaserFired].getX();
-            float currLaserPosY = this.laserArr[numLaserFired].getY();
-            float offsetX = this.laserArr[numLaserFired].getWidth()/2;
-            float offsetY = this.laserArr[numLaserFired].getHeight()/2;
+            float currLaserPosX = laserArr[numLaserFired].getX();
+            float currLaserPosY = laserArr[numLaserFired].getY();
+            float offsetX = laserArr[numLaserFired].getWidth()/2;
+            float offsetY = laserArr[numLaserFired].getHeight()/2;
             // reset the laser position
-            this.laserArr[numLaserFired].setX(currLaserPosX - offsetX);
-            this.laserArr[numLaserFired].setY(currLaserPosY - offsetY);
+            laserArr[numLaserFired].setX(currLaserPosX - offsetX);
+            laserArr[numLaserFired].setY(currLaserPosY - offsetY);
 
             // increment the number of laser shots fired  -- wrap it to the max laser shots to overwrite the
             // old laser shots if it comes to this point;
@@ -95,14 +95,14 @@ public class Player extends Sprite{
 
     // getter and setter methods
     public int getNumLasersFired(){
-        return this.numLaserFired;
+        return numLaserFired;
     }
 
     public Laser[] getLasersArr(){
-        return this.laserArr;
+        return laserArr;
     }
 
-    // override setY()
+    // override setY() -- handles the top of the screen
     public void setY(float y){
         // the player cannot move past the top of the screen;
         if(y>=0){

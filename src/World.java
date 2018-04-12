@@ -32,24 +32,24 @@ public class World {
 	public World() throws SlickException {
 
         // Background parameter initialisation
-        this.background = new Image[BACKGROUND_ARRAY_SIZE];
+        background = new Image[BACKGROUND_ARRAY_SIZE];
         for(int i = 0; i < BACKGROUND_ARRAY_SIZE ; i++ ) {
-            this.background[i] = new Image("res/space.png");
+            background[i] = new Image("res/space.png");
         }
         // set the initial background movement to 0 px -- every update we want this to increase by 0.2
         // max movement is 512 px -- then we want to reset this to being 0px
-        this.bgMovement = 0;
+        bgMovement = 0;
 
         // create the enemies in the world based on the max number of enemies at the
         // specified locations
-        this.enemies = new Enemy[NUM_ENEMIES];
+        enemies = new Enemy[NUM_ENEMIES];
         for(int i = 0;i < NUM_ENEMIES;i++){
             // create each enemy and space the enemies out on screen based on an initial position
             // and an px-spacing between each enemy
             enemies[i] = new Enemy(ENEMY_IMG_PATH,START_ENEMY_XPOS+(ENEMY_SPACING_PX)*i,START_ENEMY_YPOS);
         }
         // set the player and its initial location in the world
-        this.player = new Player(PLAYER_IMG_PATH,INIT_PLAYER_XPOS,INIT_PLAYER_YPOS);
+        player = new Player(PLAYER_IMG_PATH,INIT_PLAYER_XPOS,INIT_PLAYER_YPOS);
 	}
 
 	// override the sprite method
@@ -60,13 +60,13 @@ public class World {
           rate of 0.2px/ms -- the max that the background can move is 512px
           before it resets to 0
           */
-        bgMovement=(bgMovement+BG_OFFSET_PER_SEC*delta)%this.background[0].getHeight();
+        bgMovement=(bgMovement+BG_OFFSET_PER_SEC*delta)%background[0].getHeight();
 
         // get the array of lasers for checking collisions
         Laser[] lasersArr = player.getLasersArr();
 
         // loop through each of the enemies and check if they have been contacted with another sprite
-        for (int i = 0; i < this.NUM_ENEMIES; i++){
+        for (int i = 0; i < NUM_ENEMIES; i++){
             // skip over the enemies that do not exist on the world anymore
             if(!enemies[i].getExistState()){
                 continue;
@@ -87,13 +87,13 @@ public class World {
             // checks if the player makes contact with the enemy
             if(player.makesContact(enemies[i])){
                 enemies[i].contactSprite(player);
-                this.gameOver = true;
+                gameOver = true;
             }
         }
 
         // checks if the game is over by checking how many enemies have been killed
         if(numEnemiesKilled() == NUM_ENEMIES){
-            this.gameOver = true;
+            gameOver = true;
         }
         // finally we update the player;
         player.update(input,delta);
@@ -141,12 +141,12 @@ public class World {
     }
     // getter method that returns if the game is over
     public boolean isGameOver(){
-	    return this.gameOver;
+	    return gameOver;
     }
     // helper method to return the number of enemies currently killed in a game
     private int numEnemiesKilled(){
 	    int killed = 0;
-	    for(Enemy enemy: this.enemies){
+	    for(Enemy enemy: enemies){
 	        if(!enemy.getExistState()){
 	            killed++;
             }

@@ -74,9 +74,4 @@ public class BoundingBox {
 			  || other.top > getBottom()
 			  || other.getBottom() < top);
 	}
-
-	public void printBB(BoundingBox other){
-		System.out.format("THIS T: %f B: %f L: %f R: %f\n",width,height,left,top);
-		System.out.format("OTHER T: %f B: %f L: %f R: %f\n",other.width,other.height,other.left,other.top);
-	}
 }

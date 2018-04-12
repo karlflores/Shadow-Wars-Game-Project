@@ -13,17 +13,17 @@ public class Laser extends Sprite{
 
     public void update(Input input,int delta) throws SlickException{
         // only update if it exists
-        if(!this.getExistState()){
+        if(!getExistState()){
             //do no thing
             return;
         }
         super.update(input,delta);
         //update the y positions of the laser shot if it exists
-        this.setY(this.getY() - LASER_SPEED * delta);
+        setY(getY() - LASER_SPEED * delta);
 
         // if the laser has hit the top of the screen -- set the render state of the laser to false
-        if(this.getY() < this.DESTROY_POSITION){
-            this.setExistState(false);
+        if(getY() < DESTROY_POSITION){
+            setExistState(false);
         }
 
     }
