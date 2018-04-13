@@ -10,7 +10,7 @@ public class Player extends Sprite{
 
     // laser data
     private Laser[] laserArr;
-    private String laserImgSrc = "res/shot.png";
+    private static final String LASER_IMG_SRC = "res/shot.png";
     private int numLaserFired;
     private static int minLaserIndexOnScreen;
     // Constructor
@@ -53,7 +53,7 @@ public class Player extends Sprite{
         // laser fired if space bar is hit
         if(input.isKeyPressed(Input.KEY_SPACE)){
             // create a new laser at the middle of the current location of the player
-            laserArr[numLaserFired] = new Laser(laserImgSrc,getX()+getWidth()/2,
+            laserArr[numLaserFired] = new Laser(LASER_IMG_SRC,getX()+getWidth()/2,
                     getY()+getHeight()/2);
 
             // edit the location of the laser to be correctly centered according to the middle of the laser sprite
