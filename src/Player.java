@@ -6,7 +6,7 @@ public class Player extends Sprite{
 
     //constants
     private static float MOVE_RATE = 0.5f;
-    private static int MAX_NUM_LASER = 200;
+    private static int MAX_NUM_LASER = 4096;
 
     // laser data
     private Laser[] laserArr;
