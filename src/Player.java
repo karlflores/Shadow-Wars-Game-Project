@@ -6,13 +6,13 @@ public class Player extends Sprite{
 
     //constants
     private static float MOVE_RATE = 0.5f;
-    private static int MAX_NUM_LASER = 100;
+    private static int MAX_NUM_LASER = 200;
 
     // laser data
     private Laser[] laserArr;
     private String laserImgSrc = "res/shot.png";
     private int numLaserFired;
-
+    private static int minLaserIndexOnScreen;
     // Constructor
     public Player(String imageSrc,float x,float y) throws SlickException{
         // update the player
@@ -20,6 +20,7 @@ public class Player extends Sprite{
         // create the array of lasers
         laserArr = new Laser[256];
         numLaserFired = 0;
+        minLaserIndexOnScreen = 0;
 
     }
 
@@ -67,6 +68,7 @@ public class Player extends Sprite{
             // increment the number of laser shots fired  -- wrap it to the max laser shots to overwrite the
             // old laser shots if it comes to this point;
             numLaserFired = (numLaserFired+1)%MAX_NUM_LASER;
+            //minLaserIndexOnScreen = (minLaserIndexOnScreen+1)%MAX_NUM_LASER;
         }
 
         // update the laser locations
@@ -108,5 +110,14 @@ public class Player extends Sprite{
         if(y>=0){
             super.setY(y);
         }
+    }
+
+    public static void setMinLaserIndexOnScreen(int index){
+        minLaserIndexOnScreen = index%MAX_NUM_LASER;
+    }
+    public static int getMinLaserIndexOnScreen(){
+        //System.out.println(minLaserIndexOnScreen);
+        return minLaserIndexOnScreen;
+
     }
 }

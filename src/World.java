@@ -71,8 +71,9 @@ public class World {
             if(!enemies[i].getExistState()){
                 continue;
             }
-            // loop through all the lasers that have currently been fired
-            for(int j = 0;j < player.getNumLasersFired(); j++) {
+            // loop through all the lasers that are currently on the screen as these are the only
+            // ones that we have to check
+            for(int j = Player.getMinLaserIndexOnScreen();j < player.getNumLasersFired(); j++) {
                 // skip all the laser that do not exist anymore
                 if(!lasersArr[j].getExistState()){
                     continue;
