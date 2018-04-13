@@ -6,27 +6,27 @@ public class World {
     //BACKGROUND DATA
     private Image[] background;
     //indicating the size of the background array -- 4 parts + 2 parts for the sub images
-    private static int BACKGROUND_ARRAY_SIZE = 4;
+    private static final int BACKGROUND_ARRAY_SIZE = 4;
     // how many pixels the background moves each update
-    private static float BG_OFFSET_PER_SEC = 0.2f;
+    private static final float BG_OFFSET_PER_SEC = 0.2f;
     private float bgMovement;
 
     // enemy data
-    private static int NUM_ENEMIES = 8;
+    private static final int NUM_ENEMIES = 8;
     private boolean gameOver = false;
     private Enemy[] enemies;
     //CONSTANTS
     private static String ENEMY_IMG_PATH = "res/basic-enemy.png";
-    private static int ENEMY_SPACING_PX = 128;
-    private static int START_ENEMY_XPOS = 32;
-    private static int START_ENEMY_YPOS = 32;
+    private static final int ENEMY_SPACING_PX = 128;
+    private static final int START_ENEMY_XPOS = 32;
+    private static final int START_ENEMY_YPOS = 32;
 
     // player data
     private Player player;
     // CONSTANTS
-    private static String PLAYER_IMG_PATH = "res/spaceship.png";
-    private static int INIT_PLAYER_XPOS = 488;
-    private static int INIT_PLAYER_YPOS = 640;
+    private static final String PLAYER_IMG_PATH = "res/spaceship.png";
+    private static final int INIT_PLAYER_XPOS = 488;
+    private static final int INIT_PLAYER_YPOS = 640;
 
     // constructor
 	public World() throws SlickException {

@@ -3,8 +3,8 @@ import org.newdawn.slick.Input;
 // Implements the laser class -- should be created every time the space bar is hit
 public class Laser extends Sprite{
     // laser constants
-    private float DESTROY_POSITION = -10f;
-    private float LASER_SPEED = 3f;
+    private static final float DESTROY_POSITION = -10f;
+    private static final float LASER_SPEED = 3f;
 
     //constructor class
     public Laser(String imageSrc, float x,float y) throws SlickException{
