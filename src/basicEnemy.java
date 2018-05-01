@@ -8,7 +8,7 @@ public class basicEnemy extends Enemy{
     private static final int SCORE = 50;
 
     public basicEnemy(float x,int delay) throws SlickException{
-        super(ENEMY_IMG_PATH,x,MOVE_RATE,SCORE,delay);
+        super(ENEMY_IMG_PATH,x,SCORE,delay);
     }
     public void update(Input input, int delta) throws SlickException{
         super.update(input, delta);

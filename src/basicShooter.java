@@ -13,7 +13,7 @@ public class basicShooter extends Enemy implements Shootable{
     private int timeLastFired = 0;
 
     public basicShooter(float x,int delay) throws SlickException{
-        super(ENEMY_IMG_PATH,x,MOVE_RATE,SCORE,delay);
+        super(ENEMY_IMG_PATH,x,SCORE,delay);
         yThresh = World.getRandomInt(Y_END_MIN,Y_END_MAX);
         // System.out.println(yThresh);
         // the ave

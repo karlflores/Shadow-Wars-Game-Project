@@ -4,15 +4,13 @@ import org.newdawn.slick.Input;
 // This currently does nothing but allows for extension
 public abstract class Enemy extends Sprite {
     private final int delay;
-    private final float moveRate;
     private final int score;
     private final static float INIT_YPOS = -64f;
 
     //constructor class
-    public Enemy(String imageSrc, float x,float moveRate, int score,int delay) throws SlickException{
+    public Enemy(String imageSrc, float x, int score,int delay) throws SlickException{
         super(imageSrc,x,INIT_YPOS);
         this.score = score;
-        this.moveRate = moveRate;
         this.delay = delay;
 
     }

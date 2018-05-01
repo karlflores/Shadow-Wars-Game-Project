@@ -11,7 +11,7 @@ public class sineEnemy extends Enemy {
     private static final int PERIOD = 1500;
     private float xPos;
     public sineEnemy(float x,int delay) throws SlickException{
-        super(ENEMY_IMG_PATH,x,MOVE_RATE,SCORE,delay);
+        super(ENEMY_IMG_PATH,x,SCORE,delay);
 
         // the average xPos of the enemy (pivot)
         xPos = getX();
