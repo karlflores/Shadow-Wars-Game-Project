@@ -2,6 +2,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class World {
     //BACKGROUND DATA
@@ -17,14 +18,13 @@ public class World {
     private boolean gameOver = false;
     private int enemiesKilled = 0;
     //CONSTANTS
-    private static final String ENEMY_IMG_PATH = "res/basic-enemy.png";
+
     private static final int ENEMY_SPACING_PX = 128;
     private static final int START_ENEMY_XPOS = 32;
     private static final int START_ENEMY_YPOS = 32;
 
     // player data
     // CONSTANTS
-    private static final String PLAYER_IMG_PATH = "res/spaceship.png";
     private static final int INIT_PLAYER_XPOS = 488;
     private static final int INIT_PLAYER_YPOS = 640;
 
@@ -33,10 +33,17 @@ public class World {
     // world instance
     private static World world;
 
+    // timer
+    private static int runtime;
+
+    // random generator -- seed based on the current time
+    private static Random randomGen = new Random(System.currentTimeMillis());
+
     // constructor
 	public World() throws SlickException {
 
         // Background parameter initialisation
+        runtime = 0;
         background = new Image[BACKGROUND_ARRAY_SIZE];
         for(int i = 0; i < BACKGROUND_ARRAY_SIZE ; i++ ) {
             background[i] = new Image("res/space.png");
@@ -51,31 +58,24 @@ public class World {
         for(int i = 0;i < NUM_ENEMIES;i++){
             // create each enemy and space the enemies out on screen based on an initial position
             // and an px-spacing between each enemy
-            sprites.add(new basicEnemy(ENEMY_IMG_PATH,START_ENEMY_XPOS+(ENEMY_SPACING_PX)*i,START_ENEMY_YPOS));
+            sprites.add(new basicShooter(START_ENEMY_XPOS+(ENEMY_SPACING_PX)*i,500));
         }
+        // sprites.add(new sineEnemy(600,1000));
         // set the player and its initial location in the world
-        sprites.add(new Player(PLAYER_IMG_PATH,INIT_PLAYER_XPOS,INIT_PLAYER_YPOS));
+        sprites.add(new Player(INIT_PLAYER_XPOS,INIT_PLAYER_YPOS));
 
         // initialise the instance
         world = this;
 	}
 
     public static World getWorld(){
-	    /*
-	    if(world == null){
-	        try {
-                world = new World();
-            } catch(SlickException e){
-	            e.printStackTrace();
-            }
-	        return world;
-        }
-        */
 	    return world;
     }
 
 	// override the sprite method
 	public void update(Input input, int delta) throws SlickException{
+        // every time the world updates we add delta to the timer
+        runtime+=delta;
         // Update the Background Parameters
         /*
           every time we want to update we want to move the background down at
@@ -102,15 +102,27 @@ public class World {
                 if(this_sprite != other_sprite){
                     if(this_sprite.makesContact(other_sprite)){
                         // remove both sprites from the game if they collide with each other
-                        if(this_sprite instanceof Laser  && other_sprite instanceof Player ||
-                            this_sprite instanceof Player && other_sprite instanceof Laser) {
+                        if(this_sprite instanceof playerLaser && other_sprite instanceof Player ||
+                            this_sprite instanceof Player && other_sprite instanceof playerLaser) {
+                            continue;
+                        }
+                        // if the two sprites are a playerLaser and enemy laser continue
+                        if(this_sprite instanceof playerLaser && other_sprite instanceof enemyLaser ||
+                                this_sprite instanceof enemyLaser && other_sprite instanceof playerLaser){
+                            continue;
+                        }
+                        if(this_sprite instanceof enemyLaser && other_sprite instanceof Enemy ||
+                                this_sprite instanceof Enemy && other_sprite instanceof enemyLaser) {
                             continue;
                         }
                         this_sprite.contactSprite(other_sprite);
-                        if(this_sprite instanceof Laser && other_sprite instanceof Enemy) {
-                            enemiesKilled++;
 
-                        }else if(this_sprite instanceof Enemy && other_sprite instanceof Player){
+                        // check if an enemy was killed
+                        if(this_sprite instanceof playerLaser && other_sprite instanceof Enemy) {
+                            enemiesKilled++;
+                        }else if(this_sprite instanceof Enemy && other_sprite instanceof Player ||
+                                this_sprite instanceof enemyLaser && other_sprite instanceof Player){
+                            // check if a player was destroyed -- therefore end the game if true
                             gameOver = true;
                         }
 
@@ -180,6 +192,14 @@ public class World {
 
     public static Sprite getSpriteAtIndex(int index){
 	    return sprites.get(index);
+    }
+
+    public int getTime(){
+        return runtime;
+    }
+
+    public static int getRandomInt(int min, int max){
+	    return min + randomGen.nextInt(max);
     }
 
 }

@@ -1,22 +1,18 @@
-import org.lwjgl.Sys;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Input;
 // Implementation of the player class as an extension of the sprite class
-public class Player extends Sprite{
+public class Player extends Sprite implements Shootable{
 
     //constants
     private static final float MOVE_RATE = 0.5f;
-    private static final int MAX_NUM_LASER = 4096;
+    private static final int SHOOT_RATE = 350;
+    private static final String PLAYER_IMG_SRC = "res/spaceship.png";
 
-    // laser data
-
-    private static final String LASER_IMG_SRC = "res/shot.png";
-    private int numLaserFired;
-    private static int minLaserIndexOnScreen;
+    private int lastTimeShot = 0;
     // Constructor
-    public Player(String imageSrc,float x,float y) throws SlickException{
+    public Player(float x,float y) throws SlickException{
         // update the player
-        super(imageSrc,x,y);
+        super(PLAYER_IMG_SRC,x,y);
     }
 
     // update method
@@ -27,6 +23,8 @@ public class Player extends Sprite{
         }
         super.update(input,delta);
 
+        // incrase the laser shot counter
+        lastTimeShot+=delta;
         // move according to key presses
         if(input.isKeyDown(Input.KEY_UP)){
             // move up -- decrease Y
@@ -46,20 +44,14 @@ public class Player extends Sprite{
         }
 
         // laser fired if space bar is hit
-        if(input.isKeyPressed(Input.KEY_SPACE)){
-            // create a new laser at the middle of the current location of the player
-            Laser tempLaser = new Laser(LASER_IMG_SRC,getX()+getWidth()/2,
-                    getY()+getHeight()/2);
+        if(input.isKeyDown(Input.KEY_SPACE)){
 
-            // edit the location of the laser to be correctly centered according to the middle of the laser sprite
-            float offsetX = tempLaser.getWidth()/2;
-            float offsetY = tempLaser.getHeight()/2;
-            // reset the laser position
-            tempLaser.setX(tempLaser.getX() - offsetX);
-            tempLaser.setY(tempLaser.getY() - offsetY);
+            // double check this condition
+            if(lastTimeShot > SHOOT_RATE){
+                shootLaser();
+                lastTimeShot=0;
+            }
 
-            // add the laser to the world
-            World.getWorld().addSprite(tempLaser);
         }
 
     }
@@ -72,8 +64,19 @@ public class Player extends Sprite{
     // override setY() -- handles the top of the screen
     public void setY(float y){
         // the player cannot move past the top of the screen;
-        if(y>=0){
+        if(y>=0 && y<=App.SCREEN_HEIGHT-getHeight()){
             super.setY(y);
+        }
+    }
+
+    public void shootLaser(){
+        // create a new laser at the middle of the current location of the player
+        try{
+            playerLaser tempLaser = new playerLaser(getX()+getWidth()/2,getY()+getHeight()/2);
+            // add the laser to the world
+            World.getWorld().addSprite(tempLaser);
+        }catch(SlickException e){
+            e.printStackTrace();
         }
     }
 

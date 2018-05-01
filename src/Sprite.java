@@ -18,6 +18,8 @@ public abstract class Sprite {
     */
     private boolean exists;
 
+    private int timeExist;
+
 	public Sprite(String imageSrc, float x, float y) throws SlickException {
 		// Why would the constructor need a path to an image, and a coordinate?
 		this.x = x;
@@ -29,6 +31,9 @@ public abstract class Sprite {
 
 		// when a sprite is created it should be rendered to the screen
 		exists = true;
+
+		// timer
+        timeExist = 0;
 
 	}
 	
@@ -48,6 +53,8 @@ public abstract class Sprite {
         Since delta is the number of ms since the last frame update therefore x*delta is the
         number pixels it should move on this update
          */
+        // update the timer -- delta is the number of ms since the last update
+        timeExist+=delta;
 	}
 
 	public void render() {
@@ -89,9 +96,7 @@ public abstract class Sprite {
 
     // set y -- all sprites cannot move past the bottom of the screen
     public void setY(float y){
-	    if(y<=App.SCREEN_HEIGHT-getHeight()){
-	        this.y = y;
-        }
+	    this.y = y;
     }
     // location getters
     public float getX(){
@@ -114,5 +119,10 @@ public abstract class Sprite {
     public int getWidth(){
 	    return image.getWidth();
     }
+
+    public int getTimeExists(){
+	    return timeExist;
+    }
+
 }
 
