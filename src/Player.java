@@ -9,7 +9,7 @@ public class Player extends Sprite{
     private static final int MAX_NUM_LASER = 4096;
 
     // laser data
-    private Laser[] laserArr;
+
     private static final String LASER_IMG_SRC = "res/shot.png";
     private int numLaserFired;
     private static int minLaserIndexOnScreen;
@@ -17,11 +17,6 @@ public class Player extends Sprite{
     public Player(String imageSrc,float x,float y) throws SlickException{
         // update the player
         super(imageSrc,x,y);
-        // create the array of lasers
-        laserArr = new Laser[256];
-        numLaserFired = 0;
-        minLaserIndexOnScreen = 0;
-
     }
 
     // update method
@@ -53,55 +48,25 @@ public class Player extends Sprite{
         // laser fired if space bar is hit
         if(input.isKeyPressed(Input.KEY_SPACE)){
             // create a new laser at the middle of the current location of the player
-            laserArr[numLaserFired] = new Laser(LASER_IMG_SRC,getX()+getWidth()/2,
+            Laser tempLaser = new Laser(LASER_IMG_SRC,getX()+getWidth()/2,
                     getY()+getHeight()/2);
 
             // edit the location of the laser to be correctly centered according to the middle of the laser sprite
-            float currLaserPosX = laserArr[numLaserFired].getX();
-            float currLaserPosY = laserArr[numLaserFired].getY();
-            float offsetX = laserArr[numLaserFired].getWidth()/2;
-            float offsetY = laserArr[numLaserFired].getHeight()/2;
+            float offsetX = tempLaser.getWidth()/2;
+            float offsetY = tempLaser.getHeight()/2;
             // reset the laser position
-            laserArr[numLaserFired].setX(currLaserPosX - offsetX);
-            laserArr[numLaserFired].setY(currLaserPosY - offsetY);
+            tempLaser.setX(tempLaser.getX() - offsetX);
+            tempLaser.setY(tempLaser.getY() - offsetY);
 
-            // increment the number of laser shots fired  -- wrap it to the max laser shots to overwrite the
-            // old laser shots if it comes to this point;
-            numLaserFired = (numLaserFired+1)%MAX_NUM_LASER;
-            //minLaserIndexOnScreen = (minLaserIndexOnScreen+1)%MAX_NUM_LASER;
+            // add the laser to the world
+            World.getWorld().addSprite(tempLaser);
         }
 
-        // update the laser locations
-        for(int i = 0; i < numLaserFired; i++){
-            // skip over the laser shots that do not exist
-            if(!laserArr[i].getExistState()){
-                continue;
-            }
-            // if the laser exists then we can update it
-            laserArr[i].update(input,delta);
-            // if the laser does not exist we can get rid of it.
-        }
     }
 
     //override the sprite render -- need to render all the lasers that the player has fired
     public void render(){
         super.render();
-
-        // need to render each of the laser shots on the screen
-        for(int i = 0;i < numLaserFired; i++){
-            if(laserArr[i].getExistState()) {
-                laserArr[i].render();
-            }
-        }
-    }
-
-    // getter and setter methods
-    public int getNumLasersFired(){
-        return numLaserFired;
-    }
-
-    public Laser[] getLasersArr(){
-        return laserArr;
     }
 
     // override setY() -- handles the top of the screen
@@ -112,12 +77,4 @@ public class Player extends Sprite{
         }
     }
 
-    public static void setMinLaserIndexOnScreen(int index){
-        minLaserIndexOnScreen = index%MAX_NUM_LASER;
-    }
-    public static int getMinLaserIndexOnScreen(){
-        //System.out.println(minLaserIndexOnScreen);
-        return minLaserIndexOnScreen;
-
-    }
 }

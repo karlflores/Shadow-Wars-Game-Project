@@ -1,7 +1,8 @@
-import org.lwjgl.Sys;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import java.util.ArrayList;
+
 public class World {
     //BACKGROUND DATA
     private Image[] background;
@@ -14,19 +15,23 @@ public class World {
     // enemy data
     private static final int NUM_ENEMIES = 8;
     private boolean gameOver = false;
-    private Enemy[] enemies;
+    private int enemiesKilled = 0;
     //CONSTANTS
-    private static String ENEMY_IMG_PATH = "res/basic-enemy.png";
+    private static final String ENEMY_IMG_PATH = "res/basic-enemy.png";
     private static final int ENEMY_SPACING_PX = 128;
     private static final int START_ENEMY_XPOS = 32;
     private static final int START_ENEMY_YPOS = 32;
 
     // player data
-    private Player player;
     // CONSTANTS
     private static final String PLAYER_IMG_PATH = "res/spaceship.png";
     private static final int INIT_PLAYER_XPOS = 488;
     private static final int INIT_PLAYER_YPOS = 640;
+
+    private static ArrayList<Sprite> sprites = new ArrayList<>();
+
+    // world instance
+    private static World world;
 
     // constructor
 	public World() throws SlickException {
@@ -42,15 +47,32 @@ public class World {
 
         // create the enemies in the world based on the max number of enemies at the
         // specified locations
-        enemies = new Enemy[NUM_ENEMIES];
+
         for(int i = 0;i < NUM_ENEMIES;i++){
             // create each enemy and space the enemies out on screen based on an initial position
             // and an px-spacing between each enemy
-            enemies[i] = new Enemy(ENEMY_IMG_PATH,START_ENEMY_XPOS+(ENEMY_SPACING_PX)*i,START_ENEMY_YPOS);
+            sprites.add(new basicEnemy(ENEMY_IMG_PATH,START_ENEMY_XPOS+(ENEMY_SPACING_PX)*i,START_ENEMY_YPOS));
         }
         // set the player and its initial location in the world
-        player = new Player(PLAYER_IMG_PATH,INIT_PLAYER_XPOS,INIT_PLAYER_YPOS);
+        sprites.add(new Player(PLAYER_IMG_PATH,INIT_PLAYER_XPOS,INIT_PLAYER_YPOS));
+
+        // initialise the instance
+        world = this;
 	}
+
+    public static World getWorld(){
+	    /*
+	    if(world == null){
+	        try {
+                world = new World();
+            } catch(SlickException e){
+	            e.printStackTrace();
+            }
+	        return world;
+        }
+        */
+	    return world;
+    }
 
 	// override the sprite method
 	public void update(Input input, int delta) throws SlickException{
@@ -62,59 +84,57 @@ public class World {
           */
         bgMovement=(bgMovement+BG_OFFSET_PER_SEC*delta)%background[0].getHeight();
 
-        // get the array of lasers for checking collisions
-        Laser[] lasersArr = player.getLasersArr();
+        // update each sprite -- either update or remove them depending if they exist or not
+        for(int i = 0; i < sprites.size(); i++) {
+            if (sprites.get(i).getExistState()) {
+                sprites.get(i).update(input, delta);
+            }else{
+                sprites.remove(i);
+                i--;
+            }
+        }
 
-        // loop through each of the enemies and check if they have been contacted with another sprite
-        for (int i = 0; i < NUM_ENEMIES; i++){
-            // skip over the enemies that do not exist on the world anymore
-            if(!enemies[i].getExistState()){
-                continue;
-            }
-            // loop through all the lasers that are currently on the screen as these are the only
-            // ones that we have to check
-            for(int j = Player.getMinLaserIndexOnScreen();j < player.getNumLasersFired(); j++) {
-                // skip all the laser that do not exist anymore
-                if(!lasersArr[j].getExistState()){
-                    continue;
+        //System.out.println("updated");
+        // loop through each sprite, check for collisions
+        for(Sprite this_sprite : sprites) {
+            for (Sprite other_sprite : sprites) {
+                // if they are not the same sprite, check if they collide with each other
+                if(this_sprite != other_sprite){
+                    if(this_sprite.makesContact(other_sprite)){
+                        // remove both sprites from the game if they collide with each other
+                        if(this_sprite instanceof Laser  && other_sprite instanceof Player ||
+                            this_sprite instanceof Player && other_sprite instanceof Laser) {
+                            continue;
+                        }
+                        this_sprite.contactSprite(other_sprite);
+                        if(this_sprite instanceof Laser && other_sprite instanceof Enemy) {
+                            enemiesKilled++;
+
+                        }else if(this_sprite instanceof Enemy && other_sprite instanceof Player){
+                            gameOver = true;
+                        }
+
+                    }
                 }
-                // check for collision
-                if(lasersArr[j].makesContact(enemies[i])) {
-                    enemies[i].contactSprite(lasersArr[j]);
-                }
-                // if the enemy exists we should update it
-                enemies[i].update(input, delta);
-            }
-            // checks if the player makes contact with the enemy
-            if(player.makesContact(enemies[i])){
-                enemies[i].contactSprite(player);
-                gameOver = true;
             }
         }
 
         // checks if the game is over by checking how many enemies have been killed
-        if(numEnemiesKilled() == NUM_ENEMIES){
+        if(enemiesKilled == NUM_ENEMIES) {
             gameOver = true;
         }
-        // finally we update the player;
-        player.update(input,delta);
 	}
 	
 	public void render() {
         // draw the background
         drawBackground();
 
-        // draw the player
-        player.render();
-
-        // draw the enemies
-        for(Enemy enemy : enemies){
-            if(enemy.getExistState()) {
-                enemy.render();
-            }
+        // draw all the sprites in the image
+        for(Sprite sprite : sprites){
+            sprite.render();
         }
-
 	}
+
 	private void drawBackground(){
 	    //need to tile the background into 4 parts
         //image is 512 x 512 px
@@ -124,6 +144,7 @@ public class World {
         updateBackgroundScroll(background[2],background[2].getHeight()+1,0);
         updateBackgroundScroll(background[3],background[3].getHeight()+1,background[3].getHeight()+1);
     }
+
     private void updateBackgroundScroll(Image background,int x,int y){
 	    //split up the background segment into two segments -- the part that is moved down,
         // the part that is cropped and should be rendered at the top of the original segment
@@ -140,18 +161,25 @@ public class World {
         splitOriginalSegment.draw(x,y+bgMovement);
         splitCropSegment.draw(x,y);
     }
+
     // getter method that returns if the game is over
     public boolean isGameOver(){
 	    return gameOver;
     }
     // helper method to return the number of enemies currently killed in a game
-    private int numEnemiesKilled(){
-	    int killed = 0;
-	    for(Enemy enemy: enemies){
-	        if(!enemy.getExistState()){
-	            killed++;
-            }
-        }
-        return killed;
+
+    public void addSprite(Sprite sprite){
+	    System.out.println("added sprite");
+	    sprites.add(sprite);
+	    System.out.println("skjhfksdjhf");
     }
+
+    public static void removeSprite(Sprite sprite){
+	    sprites.remove(sprite);
+    }
+
+    public static Sprite getSpriteAtIndex(int index){
+	    return sprites.get(index);
+    }
+
 }

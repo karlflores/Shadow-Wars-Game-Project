@@ -1,3 +1,5 @@
-public class basicShooter extends Enemy{
+package Enemies;
+
+public class basicShooter /*extends Enemy*/{
 
 }

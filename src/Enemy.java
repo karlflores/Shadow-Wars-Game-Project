@@ -1,7 +1,8 @@
 import org.newdawn.slick.SlickException;
 // Implements the enemy class as an extension of the sprite abstract class
 // This currently does nothing but allows for extension
-public abstract class Enemy extends Sprite{
+public abstract class Enemy extends Sprite {
+
     //constructor class
     public Enemy(String imageSrc, float x, float y) throws SlickException{
         super(imageSrc,x,y);
@@ -13,3 +14,4 @@ public abstract class Enemy extends Sprite{
         }
     }
 }
+

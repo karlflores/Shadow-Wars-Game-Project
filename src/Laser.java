@@ -24,9 +24,6 @@ public class Laser extends Sprite{
         // if the laser has hit the top of the screen -- set the render state of the laser to false
         if(getY() < DESTROY_POSITION){
             setExistState(false);
-
-            // decrease the index of
-            Player.setMinLaserIndexOnScreen(Player.getMinLaserIndexOnScreen()+1);
         }
     }
 }

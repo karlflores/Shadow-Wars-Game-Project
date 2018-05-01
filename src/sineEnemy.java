@@ -1,2 +1,4 @@
-public class sineEnemy extends Enemy {
+package Enemies;
+
+public class sineEnemy/* extends Enemy */{
 }

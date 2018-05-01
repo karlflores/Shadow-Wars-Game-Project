@@ -1,2 +1,4 @@
-public class Boss extends Enemy{
+package Enemies;
+
+public class Boss /*extends Enemy*/{
 }
