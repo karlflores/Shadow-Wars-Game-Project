@@ -26,5 +26,9 @@ public abstract class Laser extends Sprite{
             return;
         }
         super.update(input,delta);
+
+        if(getY() > App.SCREEN_HEIGHT){
+            setExistState(false);
+        }
     }
 }

@@ -19,8 +19,12 @@ public class App extends BasicGame {
     public static final int SCREEN_WIDTH = 1024;
     /** screen height, in pixels */
     public static final int SCREEN_HEIGHT = 768;
+
+    private static final int GAME_SPEEDUP = 5;
     
     private World world;
+    private Overlay overlay;
+    private static int num_speedup = 0;
 
     public App() {    	
         super("Shadow Wars");
@@ -30,6 +34,8 @@ public class App extends BasicGame {
     public void init(GameContainer gc)
     		throws SlickException {
     	world = new World();
+    	overlay = new Overlay(Player.getMaxNumLives());
+
     }
 
     /** Update the game state for a frame.
@@ -41,7 +47,21 @@ public class App extends BasicGame {
     		throws SlickException {
         // Get data about the current input (keyboard state).
         Input input = gc.getInput();
-        world.update(input, delta);
+
+        // if the key is pressed, increment the speedup
+        if(input.isKeyPressed(Input.KEY_U)){
+            num_speedup++;
+        }
+        if(input.isKeyDown(Input.KEY_U) && num_speedup < 5){
+
+            // speed up the game if the key is pressed
+            world.update(input, delta*GAME_SPEEDUP);
+
+        }else{
+            world.update(input, delta);
+
+            //System.out.println(num_speedup);
+        }
 
         // exit the game if the game is determined to be over
         if(world.isGameOver()){
@@ -61,6 +81,7 @@ public class App extends BasicGame {
     public void render(GameContainer gc, Graphics g)
     		throws SlickException {
     	world.render();
+    	overlay.render(gc,g);
     }
 
     /** Start-up method. Creates the game and runs it.

@@ -1,5 +1,9 @@
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Input;
+
+import java.util.ArrayList;
+
 // Implementation of the player class as an extension of the sprite class
 public class Player extends Sprite implements Shootable{
 
@@ -7,8 +11,11 @@ public class Player extends Sprite implements Shootable{
     private static final float MOVE_RATE = 0.5f;
     private static final int SHOOT_RATE = 350;
     private static final String PLAYER_IMG_SRC = "res/spaceship.png";
+    private static final int MAX_NUM_LIVES = 3;
 
+    private int numLives = 3;
     private int lastTimeShot = 0;
+
     // Constructor
     public Player(float x,float y) throws SlickException{
         // update the player
@@ -79,5 +86,18 @@ public class Player extends Sprite implements Shootable{
             e.printStackTrace();
         }
     }
+
+    public void looseLife(){
+        if(this.numLives < 3){
+            numLives--;
+            // remove a life from the board
+            Overlay.getOverlay().removeLife();
+        }
+    }
+
+    public static int getMaxNumLives(){
+        return MAX_NUM_LIVES;
+    }
+
 
 }

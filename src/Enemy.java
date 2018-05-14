@@ -10,6 +10,10 @@ public abstract class Enemy extends Sprite {
     //constructor class
     public Enemy(String imageSrc, float x, int score,int delay) throws SlickException{
         super(imageSrc,x,INIT_YPOS);
+
+        setX(getX()+getWidth()/2);
+        setY(getY()+getHeight()/2);
+
         this.score = score;
         this.delay = delay;
 
@@ -30,6 +34,7 @@ public abstract class Enemy extends Sprite {
     public int getScore() {
         return score;
     }
+
     public int getDelay(){
         return delay;
     }

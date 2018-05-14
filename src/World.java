@@ -3,15 +3,16 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class World {
     //BACKGROUND DATA
-    private Image[] background;
-    //indicating the size of the background array -- 4 parts + 2 parts for the sub images
-    private static final int BACKGROUND_ARRAY_SIZE = 4;
+    private Image background;
     // how many pixels the background moves each update
     private static final float BG_OFFSET_PER_SEC = 0.2f;
-    private float bgMovement;
+    private float backgroundOffset = 0;
 
     // enemy data
     private static final int NUM_ENEMIES = 8;
@@ -39,33 +40,41 @@ public class World {
     // random generator -- seed based on the current time
     private static Random randomGen = new Random(System.currentTimeMillis());
 
+    // test file
+    private static final String WAVES_SRC = "res/waves.txt";
+
     // constructor
 	public World() throws SlickException {
 
         // Background parameter initialisation
         runtime = 0;
-        background = new Image[BACKGROUND_ARRAY_SIZE];
-        for(int i = 0; i < BACKGROUND_ARRAY_SIZE ; i++ ) {
-            background[i] = new Image("res/space.png");
-        }
+
+        background = new Image("res/space.png");
+
         // set the initial background movement to 0 px -- every update we want this to increase by 0.2
         // max movement is 512 px -- then we want to reset this to being 0px
-        bgMovement = 0;
 
         // create the enemies in the world based on the max number of enemies at the
         // specified locations
 
-        for(int i = 0;i < NUM_ENEMIES;i++){
+        //for(int i = 0;i < NUM_ENEMIES;i++){
+        //for(int i =0 ; i < 1; i++){
             // create each enemy and space the enemies out on screen based on an initial position
             // and an px-spacing between each enemy
-            sprites.add(new basicShooter(START_ENEMY_XPOS+(ENEMY_SPACING_PX)*i,500));
-        }
+            //sprites.add(new basicEnemy(START_ENEMY_XPOS+(ENEMY_SPACING_PX)*i,0));
+        sprites.add(new Boss(512, 500));
+        //}
+        // System.out.println(sprites.size());
+        // createEnemies();
+        // System.out.println(sprites.size());
         // sprites.add(new sineEnemy(600,1000));
         // set the player and its initial location in the world
         sprites.add(new Player(INIT_PLAYER_XPOS,INIT_PLAYER_YPOS));
 
         // initialise the instance
         world = this;
+
+
 	}
 
     public static World getWorld(){
@@ -82,8 +91,6 @@ public class World {
           rate of 0.2px/ms -- the max that the background can move is 512px
           before it resets to 0
           */
-        bgMovement=(bgMovement+BG_OFFSET_PER_SEC*delta)%background[0].getHeight();
-
         // update each sprite -- either update or remove them depending if they exist or not
         for(int i = 0; i < sprites.size(); i++) {
             if (sprites.get(i).getExistState()) {
@@ -94,6 +101,7 @@ public class World {
             }
         }
 
+
         //System.out.println("updated");
         // loop through each sprite, check for collisions
         for(Sprite this_sprite : sprites) {
@@ -101,6 +109,12 @@ public class World {
                 // if they are not the same sprite, check if they collide with each other
                 if(this_sprite != other_sprite){
                     if(this_sprite.makesContact(other_sprite)){
+                        /*
+                        // if two enemies collide we don't want to delete them
+                        if(this_sprite instanceof Enemy && other_sprite instanceof Enemy){
+                            continue;
+                        }
+
                         // remove both sprites from the game if they collide with each other
                         if(this_sprite instanceof playerLaser && other_sprite instanceof Player ||
                             this_sprite instanceof Player && other_sprite instanceof playerLaser) {
@@ -115,10 +129,12 @@ public class World {
                                 this_sprite instanceof Enemy && other_sprite instanceof enemyLaser) {
                             continue;
                         }
-                        this_sprite.contactSprite(other_sprite);
+                         */
 
                         // check if an enemy was killed
-                        if(this_sprite instanceof playerLaser && other_sprite instanceof Enemy) {
+                        if(this_sprite instanceof playerLaser && other_sprite instanceof Enemy ||
+                                this_sprite instanceof Enemy && other_sprite instanceof playerLaser) {
+                            this_sprite.contactSprite(other_sprite);
                             enemiesKilled++;
                         }else if(this_sprite instanceof Enemy && other_sprite instanceof Player ||
                                 this_sprite instanceof enemyLaser && other_sprite instanceof Player){
@@ -133,46 +149,28 @@ public class World {
 
         // checks if the game is over by checking how many enemies have been killed
         if(enemiesKilled == NUM_ENEMIES) {
-            gameOver = true;
+            //gameOver = true;
         }
+
+        // update the background attributes -- this is from the project a sample code
+        backgroundOffset += BG_OFFSET_PER_SEC * delta;
+        backgroundOffset = backgroundOffset % background.getHeight();
 	}
 	
 	public void render() {
-        // draw the background
-        drawBackground();
+
+        // Tile the background image -- USING THE CODE IN THE PROJECT A SAMPLE SOLUTION
+        for (int i = 0; i < App.SCREEN_WIDTH; i += background.getWidth()) {
+            for (int j = -background.getHeight() + (int)backgroundOffset; j < App.SCREEN_HEIGHT; j += background.getHeight()) {
+                background.draw(i, j);
+            }
+        }
 
         // draw all the sprites in the image
         for(Sprite sprite : sprites){
             sprite.render();
         }
 	}
-
-	private void drawBackground(){
-	    //need to tile the background into 4 parts
-        //image is 512 x 512 px
-        // app is 1024 x 768 px -- therefore need to render image at (0,0), (0,513), (513, 0) (513,513)
-        updateBackgroundScroll(background[0],0,0);
-        updateBackgroundScroll(background[1],0,background[1].getHeight()+1);
-        updateBackgroundScroll(background[2],background[2].getHeight()+1,0);
-        updateBackgroundScroll(background[3],background[3].getHeight()+1,background[3].getHeight()+1);
-    }
-
-    private void updateBackgroundScroll(Image background,int x,int y){
-	    //split up the background segment into two segments -- the part that is moved down,
-        // the part that is cropped and should be rendered at the top of the original segment
-        // we then print the part that is on the screen at the bottom, then print the part that is off the screen
-        // at the bottom part of that segment
-
-        //get the two parts of the image based on how far the background image has moved so far
-        Image splitOriginalSegment = background.getSubImage(0,0,background.getWidth(),
-                background.getHeight()-(int)bgMovement);
-        Image splitCropSegment = background.getSubImage(0,background.getHeight()-(int)bgMovement,
-                background.getWidth(), (int)bgMovement);
-
-        //print the original segment below the split off segment using the specified location on the app (x,y)
-        splitOriginalSegment.draw(x,y+bgMovement);
-        splitCropSegment.draw(x,y);
-    }
 
     // getter method that returns if the game is over
     public boolean isGameOver(){
@@ -181,9 +179,7 @@ public class World {
     // helper method to return the number of enemies currently killed in a game
 
     public void addSprite(Sprite sprite){
-	    System.out.println("added sprite");
 	    sprites.add(sprite);
-	    System.out.println("skjhfksdjhf");
     }
 
     public static void removeSprite(Sprite sprite){
@@ -199,7 +195,55 @@ public class World {
     }
 
     public static int getRandomInt(int min, int max){
-	    return min + randomGen.nextInt(max);
+	    return min + randomGen.nextInt(max-min);
     }
 
+    private void createEnemies() throws SlickException{
+        try (BufferedReader br = new BufferedReader(new FileReader(WAVES_SRC))){
+            String txt;
+            while((txt = br.readLine())!= null){
+
+                // skip over the comment lines
+                if(txt.contains("#")){
+                    txt = br.readLine();
+                }
+                processInputLine(txt);
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void processInputLine(String line) throws SlickException{
+	    String[] input;
+	    String className;
+	    int x;
+	    int delay;
+
+	    input = line.split(",");
+
+	    // if the length of the input is wrong, then do nothing
+	    if(input.length != 3){
+	        return;
+        }
+
+        // else we assume that the line is in the correct format
+        className = input[0];
+	    x = Integer.parseInt(input[1]);
+	    delay = Integer.parseInt(input[2]);
+
+	    System.out.println(className + " "+ x +" "+ delay);
+
+        // might need to switch to a switch statement here ---
+        if(className.equals("BasicEnemy")){
+            addSprite(new basicEnemy(x,delay));
+        }else if(className.equals("SineEnemy")){
+            addSprite(new sineEnemy(x,delay));
+        }else if(className.equals("BasicShooter")){
+            addSprite(new basicShooter(x,delay));
+        }else if(className.equals("Boss")){
+            addSprite(new Boss(x, delay));
+        }
+    }
 }

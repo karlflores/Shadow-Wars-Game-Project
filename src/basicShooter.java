@@ -24,15 +24,16 @@ public class basicShooter extends Enemy implements Shootable{
         timeLastFired+=delta;
         // if we have reached the threshold y value we can start firing the laser at required intervals
         // set the Y location of the Enemy
-        if(getTimeExists() > getDelay()){
-            setY(getY()+MOVE_RATE*delta);
-        }
+        if(getTimeExists() > getDelay()) {
+            setY(getY() + MOVE_RATE * delta);
 
-        if(timeLastFired > SHOOT_DELAY){
-            shootLaser();
-            timeLastFired = 0;
-            //shootLaser();
-            // ensure that we can only fire one laser per SHOOT_DELAY INTERVAL
+
+            if (timeLastFired > SHOOT_DELAY) {
+                shootLaser();
+                timeLastFired = 0;
+                //shootLaser();
+                // ensure that we can only fire one laser per SHOOT_DELAY INTERVAL
+            }
         }
     }
 
