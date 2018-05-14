@@ -62,10 +62,10 @@ public class World {
             // create each enemy and space the enemies out on screen based on an initial position
             // and an px-spacing between each enemy
             //sprites.add(new basicEnemy(START_ENEMY_XPOS+(ENEMY_SPACING_PX)*i,0));
-        sprites.add(new Boss(512, 500));
+        // sprites.add(new Boss(512, 500));
         //}
         // System.out.println(sprites.size());
-        // createEnemies();
+        createEnemies();
         // System.out.println(sprites.size());
         // sprites.add(new sineEnemy(600,1000));
         // set the player and its initial location in the world
@@ -91,6 +91,11 @@ public class World {
           rate of 0.2px/ms -- the max that the background can move is 512px
           before it resets to 0
           */
+
+        // need to create an array list that stores all the powerups that are to be added
+        // to the sprites array list -- this is because we cant alter the sprite list whilst we
+        // are iterating through it
+
         // update each sprite -- either update or remove them depending if they exist or not
         for(int i = 0; i < sprites.size(); i++) {
             if (sprites.get(i).getExistState()) {
@@ -101,32 +106,116 @@ public class World {
             }
         }
 
-
+        Powerup powerupCreated = null;
         //System.out.println("updated");
         // loop through each sprite, check for collisions
+
         for(Sprite this_sprite : sprites) {
+
             for (Sprite other_sprite : sprites) {
+                // System.out.println(this_sprite.toString() + other_sprite.toString());
                 // if they are not the same sprite, check if they collide with each other
                 if(this_sprite != other_sprite){
+                    // now we check for collisions
                     if(this_sprite.makesContact(other_sprite)){
-                        // check if an enemy was killed
-                        if(this_sprite instanceof playerLaser && other_sprite instanceof Enemy ||
-                                this_sprite instanceof Enemy && other_sprite instanceof playerLaser) {
-                            if(this_sprite instanceof Boss || other_sprite instanceof Boss){
 
+                        // check if an enemy was killed
+                        if(this_sprite instanceof playerLaser && other_sprite instanceof Enemy) {
+
+                            // check if the boss was damaged
+                            if (other_sprite instanceof Boss) {
+                                ((Boss) other_sprite).decreaseHealth();
+
+                                // destroy the laser that came into contact with the boss
+                                this_sprite.setExistState(false);
+                            } else {
+
+                                // we kill every other sprite -- set their exist state to false
+                                this_sprite.contactSprite(other_sprite);
+                                enemiesKilled++;
+
+                                // get the location of death
+                                float x = other_sprite.getX();
+                                float y = other_sprite.getY();
+
+                                // create a power up on death
+                                powerupCreated = createPowerup(x,y);
                             }
-                            this_sprite.contactSprite(other_sprite);
-                            enemiesKilled++;
-                        }else if(this_sprite instanceof Enemy && other_sprite instanceof Player ||
-                                this_sprite instanceof enemyLaser && other_sprite instanceof Player){
+                        }else if(this_sprite instanceof Player && other_sprite instanceof Powerup){
+
+                            // activate the power up on the player
+                            ((Powerup) other_sprite).activate(((Player)this_sprite));
+
+                            // set the power up to not existing anymore
+                            other_sprite.setExistState(false);
+
+                        // if the enemy collides with the player or the enemy laser collides with the player
+                        // we need to decrease the players health
+                        }else if(this_sprite instanceof Enemy && other_sprite instanceof Player){
+
+                            // if the player is still in immunity we skip over this player
+
+                            if(((Player)other_sprite).getImmunityTimer() > 0){
+                                continue;
+                            }
+
+                            // loose a life of the player
+                            ((Player) other_sprite).looseLife();
+
                             // check if a player was destroyed -- therefore end the game if true
-                            gameOver = true;
+                            if(((Player) other_sprite).getNumLives() == 0) {
+                                gameOver = true;
+                            }
+                            this_sprite.setExistState(false);
+
+                        }else if(this_sprite instanceof enemyLaser && other_sprite instanceof Player){
+
+                            if(((Player)other_sprite).getImmunityTimer() > 0){
+                                continue;
+                            }
+
+                            // loose a life of the player
+                            ((Player) other_sprite).looseLife();
+
+                            // check if a player was destroyed -- therefore end the game if true
+                            if(((Player) other_sprite).getNumLives() == 0) {
+                                gameOver = true;
+                            }
+                            this_sprite.setExistState(false);
                         }
 
                     }
                 }
             }
+        }
 
+        // this is for score checking -- we loop through the array list looking for enemies that have been killed
+        // we add the score of these enemies to our total score
+        for(Sprite this_sprite : sprites) {
+            // if we are iterating at the boss sprite -- need to check its health
+            if (this_sprite instanceof Boss) {
+                int health = ((Boss) this_sprite).getHealth();
+                // System.out.println(health);
+
+                // check if the boss has been defeated
+                if (health == 0) {
+
+                    int score = ((Boss) this_sprite).getScore();
+                    Overlay.getOverlay().addScore(score);
+
+                    // kill the sprite and set the game to being game over
+                    this_sprite.setExistState(false);
+                }
+            } else if(this_sprite instanceof Enemy && !this_sprite.getExistState()) {
+                int score = ((Enemy)this_sprite).getScore();
+                Overlay.getOverlay().addScore(score);
+            }
+        }
+
+        // now we need to add all the powerups created
+
+        if(powerupCreated != null) {
+            addSprite(powerupCreated);
         }
 
 
@@ -223,5 +312,25 @@ public class World {
         }else if(className.equals("Boss")){
             addSprite(new Boss(x, delay));
         }
+    }
+
+    private Powerup createPowerup(float x, float y) throws SlickException{
+	    int target = 5;
+	    int result = World.getRandomInt(0,10);
+        // System.out.println(result);
+	    // 5% chance of creating a power up
+	    if(result == target){
+	        result = World.getRandomInt(0,2);
+	        // System.out.println(result);
+	        // if 0 -- create the shield 1 -- create the shotSpeed powerup
+	        if(result == 0){
+
+                return new Shield(x,y);
+            }else{
+	            return new shotSpeed(x,y);
+            }
+        }
+
+        return null;
     }
 }

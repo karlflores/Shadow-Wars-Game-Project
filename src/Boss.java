@@ -56,9 +56,9 @@ public class Boss extends Enemy implements Shootable{
             if(getY() < YPOS_THRESH){
                 setY(getY() + delta * YPOS_MOVE_RATE);
             }
-            System.out.println(behaviourTimer);
+            // System.out.println(behaviourTimer);
         }else{
-            System.out.println(xPosTo + " " + getX());
+            // System.out.println(xPosTo + " " + getX());
             // once we have done waited 5000ms we can step through the rest of the loop
             // we can move towards the x position now
 
@@ -76,7 +76,7 @@ public class Boss extends Enemy implements Shootable{
             }else {
                 waitTimer+=delta;
 
-                System.out.println(waitTimer);
+                // System.out.println(waitTimer);
                 // if we have reached 2000ms then we can pick another x position
                 if (waitTimer > 2000) {
 

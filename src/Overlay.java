@@ -21,15 +21,16 @@ public class Overlay {
             // add the sprites
             lives.add(new Life(INIT_LIVE_XPOS+LIVES_SPACING*i));
         }
+
         overlay = this;
     }
     public int getScore(){
         return score;
     }
 
-    public void setScore(int score){
-        if(score > 0){
-            this.score = score;
+    public void addScore(int add){
+        if(add > 0){
+            this.score += add;
         }
     }
 
@@ -44,6 +45,7 @@ public class Overlay {
     }
 
     public void removeLife(){
+        System.out.println("THISSSSSSSS");
         if(lives.size() > 0) {
             int lastIndex = lives.size() - 1;
             lives.remove(lastIndex);

@@ -11,8 +11,9 @@ public abstract class Enemy extends Sprite {
     public Enemy(String imageSrc, float x, int score,int delay) throws SlickException{
         super(imageSrc,x,INIT_YPOS);
 
-        setX(getX()+getWidth()/2);
-        setY(getY()+getHeight()/2);
+        // offset the position to being the top-left corner
+        setX(getX()-getWidth()/2);
+        setY(getY()-getHeight()/2);
 
         this.score = score;
         this.delay = delay;
