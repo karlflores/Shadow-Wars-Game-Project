@@ -49,10 +49,10 @@ public class App extends BasicGame {
         Input input = gc.getInput();
 
         // if the key is pressed, increment the speedup
-        if(input.isKeyPressed(Input.KEY_U)){
+        if(input.isKeyPressed(Input.KEY_S)){
             num_speedup++;
         }
-        if(input.isKeyDown(Input.KEY_U) && num_speedup < 5){
+        if(input.isKeyDown(Input.KEY_S) && num_speedup < 5){
 
             // speed up the game if the key is pressed
             world.update(input, delta*GAME_SPEEDUP);

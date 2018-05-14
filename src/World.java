@@ -122,6 +122,12 @@ public class World {
                         // check if an enemy was killed
                         if(this_sprite instanceof playerLaser && other_sprite instanceof Enemy) {
 
+                            // check if the enemy is off the screen -- if it is, then we continue
+                            // this is to ensure that the laser does not destroy the enemy
+                            if(other_sprite.getY() < 0){
+                                continue;
+                            }
+
                             // check if the boss was damaged
                             if (other_sprite instanceof Boss) {
                                 ((Boss) other_sprite).decreaseHealth();
@@ -129,7 +135,6 @@ public class World {
                                 // destroy the laser that came into contact with the boss
                                 this_sprite.setExistState(false);
                             } else {
-
                                 // we kill every other sprite -- set their exist state to false
                                 this_sprite.contactSprite(other_sprite);
                                 enemiesKilled++;
@@ -140,6 +145,7 @@ public class World {
 
                                 // create a power up on death
                                 powerupCreated = createPowerup(x,y);
+
                             }
                         }else if(this_sprite instanceof Player && other_sprite instanceof Powerup){
 
@@ -261,8 +267,13 @@ public class World {
         return runtime;
     }
 
+    /*
+    * @param min: minimum value
+    * @param max: maximum value
+    * @return: random integer between min and max (inclusive)
+     */
     public static int getRandomInt(int min, int max){
-	    return min + randomGen.nextInt(max-min);
+	    return min + randomGen.nextInt(max-min+1);
     }
 
     private void createEnemies() throws SlickException{
