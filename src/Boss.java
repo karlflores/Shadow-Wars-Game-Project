@@ -131,4 +131,14 @@ public class Boss extends Enemy implements Shootable{
         }
     }
 
+    public void decreaseHealth(){
+        if(healthRemaining > 0){
+            healthRemaining--;
+        }
+    }
+
+    public int getHealth(){
+        return healthRemaining;
+    }
+
 }

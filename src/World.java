@@ -109,31 +109,12 @@ public class World {
                 // if they are not the same sprite, check if they collide with each other
                 if(this_sprite != other_sprite){
                     if(this_sprite.makesContact(other_sprite)){
-                        /*
-                        // if two enemies collide we don't want to delete them
-                        if(this_sprite instanceof Enemy && other_sprite instanceof Enemy){
-                            continue;
-                        }
-
-                        // remove both sprites from the game if they collide with each other
-                        if(this_sprite instanceof playerLaser && other_sprite instanceof Player ||
-                            this_sprite instanceof Player && other_sprite instanceof playerLaser) {
-                            continue;
-                        }
-                        // if the two sprites are a playerLaser and enemy laser continue
-                        if(this_sprite instanceof playerLaser && other_sprite instanceof enemyLaser ||
-                                this_sprite instanceof enemyLaser && other_sprite instanceof playerLaser){
-                            continue;
-                        }
-                        if(this_sprite instanceof enemyLaser && other_sprite instanceof Enemy ||
-                                this_sprite instanceof Enemy && other_sprite instanceof enemyLaser) {
-                            continue;
-                        }
-                         */
-
                         // check if an enemy was killed
                         if(this_sprite instanceof playerLaser && other_sprite instanceof Enemy ||
                                 this_sprite instanceof Enemy && other_sprite instanceof playerLaser) {
+                            if(this_sprite instanceof Boss || other_sprite instanceof Boss){
+
+                            }
                             this_sprite.contactSprite(other_sprite);
                             enemiesKilled++;
                         }else if(this_sprite instanceof Enemy && other_sprite instanceof Player ||
@@ -145,12 +126,9 @@ public class World {
                     }
                 }
             }
+
         }
 
-        // checks if the game is over by checking how many enemies have been killed
-        if(enemiesKilled == NUM_ENEMIES) {
-            //gameOver = true;
-        }
 
         // update the background attributes -- this is from the project a sample code
         backgroundOffset += BG_OFFSET_PER_SEC * delta;
