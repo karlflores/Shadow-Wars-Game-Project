@@ -10,11 +10,22 @@ public class enemyLaser extends Laser{
     // laser data
     private static final String LASER_IMG_SRC = "res/enemy-shot.png";
 
-    //constructor class
+    /**
+     * Constructor : create the enemy laser
+     * @param x : Float - the x coord where the laser should be created
+     * @param y : Float - the y coord where the laser should be created
+     * @throws SlickException
+     */
     public enemyLaser(float x, float y) throws SlickException{
         super(LASER_IMG_SRC,x,y);
     }
-    
+
+    /**
+     * Update method
+     * @param input : keyboard input
+     * @param delta : Integer -- time in ms since the last screen update
+     * @throws SlickException
+     */
     public void update(Input input,int delta) throws SlickException{
         super.update(input,delta);
         //update the y positions of the laser shot if it exists

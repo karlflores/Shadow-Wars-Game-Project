@@ -20,7 +20,14 @@ public abstract class Sprite {
 
     private int timeExist;
 
-	public Sprite(String imageSrc, float x, float y) throws SlickException {
+    /**
+     * Constructor: create the sprite obeject at the specified location
+     * @param imgsrc : String - the path at which the image is located
+     * @param x : Float - the x coord where the powerup should be created
+     * @param y : Float - the y coord where the powerup should be created
+     * @throws SlickException
+     */
+    public Sprite(String imageSrc, float x, float y) throws SlickException {
 		// Why would the constructor need a path to an image, and a coordinate?
 		this.x = x;
 		this.y = y;
@@ -36,7 +43,13 @@ public abstract class Sprite {
         timeExist = 0;
 
 	}
-	
+
+    /**
+     * Update the parameters of the sprite -- this is called when we want to update the screen state
+     * @param input : keyboard input
+     * @param delta : Integer -- time in ms since the last screen update
+     * @throws SlickException
+     */
 	public  void update(Input input, int delta) throws SlickException{
 		// How can this one method deal with different types of sprites?
         // if the sprite exists update it
@@ -57,6 +70,9 @@ public abstract class Sprite {
         timeExist+=delta;
 	}
 
+    /**
+     * Render the sprite to the screen
+     */
 	public void render() {
 		// This should be pretty simple.
         // draw the image if it has not been destroyed.
@@ -65,7 +81,11 @@ public abstract class Sprite {
         }
 
 	}
-	
+
+    /**
+     * Method called when this sprite is in contact with another sprite
+     * @param other : Sprite -- the other sprite
+     */
 	public void contactSprite(Sprite other) {
 		// Should be called when one sprite makes contact with another.
         // sets the exist state of both sprites
@@ -73,7 +93,11 @@ public abstract class Sprite {
         this.exists = false;
 	}
 
-    //tests whether a collision as occurred
+    /**
+     * Method that tests whether a collision as occurred
+     * @param other : Sprite -- the other sprite that this sprite might be colliding with
+     * @return : Boolean -- True if a collision has occurred, False if a collision has not occurred
+     */
     public boolean makesContact(Sprite other){
         //use the bounding boxes created when instantiating the sprite to check for collisions
         if(bb.intersects(other.bb)){
@@ -88,38 +112,77 @@ public abstract class Sprite {
     // location setters
 
     // within the width of the screen
+
+    /**
+     * Set the x location of this sprite
+     * @param x : Float -- the x coord to set to
+     */
 	public void setX(float x){
 	    if(x >= 0 && x <= App.SCREEN_WIDTH-image.getWidth()){
 	        this.x = x;
         }
     }
 
-    // set y -- all sprites cannot move past the bottom of the screen
+
+    /**
+     * Set the y location of this sprite -- note that we cannot set y to be off the screen
+     * @param y : Float -- the y coord to set to
+     */
     public void setY(float y){
 	    this.y = y;
     }
-    // location getters
+
+    /**
+     * X location getters
+     * @return : Float -- the x coord of the sprite
+     */
     public float getX(){
 	    return x;
     }
+
+    /**
+     * Y location getters
+     * @return : Float -- the x coord of the sprite
+     */
     public float getY(){
 	    return y;
     }
-
+    /**
+     * Get if this sprite exists on the screen or not
+     * @return : Boolean
+     */
     public boolean getExistState(){
         return this.exists;
     }
+    /**
+     * Set if this sprite exists on the screen or not
+     * @param value : Boolean
+     */
     public void setExistState(boolean value){
         exists = value;
     }
-    // gets the height and width of the image
+
+
+    /**
+     * Image height getter
+     * @return : Integer -- the height of the sprite image
+     */
     public int getHeight(){
 	    return image.getHeight();
     }
+
+    /**
+     * Image width getter
+     * @return : Integer -- the width of the sprite image
+     */
     public int getWidth(){
 	    return image.getWidth();
     }
 
+    /**
+     * Get the exist state of the sprite
+     * @return Boolean
+     */
     public int getTimeExists(){
 	    return timeExist;
     }

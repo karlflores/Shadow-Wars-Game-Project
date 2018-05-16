@@ -4,8 +4,10 @@ import org.newdawn.slick.Input;
 
 import java.util.ArrayList;
 
-// Implementation of the player class as an extension of the sprite class
-public class Player extends Sprite implements Shootable{
+/**
+ * This class is the Implementation of the player class
+ */
+public class Player extends Sprite{
 
     //constants
     private static final float MOVE_RATE = 0.5f;
@@ -22,7 +24,13 @@ public class Player extends Sprite implements Shootable{
     private int shootRateTimer = 0;
     private int immunityTimer = IMMUNITY_TIME;
     private Image shield;
-    // Constructor
+
+    /**
+     * Constructor: create the player at coordinates x and y
+     * @param x
+     * @param y
+     * @throws SlickException
+     */
     public Player(float x,float y) throws SlickException{
         // update the player
         super(PLAYER_IMG_SRC,x,y);
@@ -30,7 +38,12 @@ public class Player extends Sprite implements Shootable{
         shield = new Image(SHIELD_SRC);
     }
 
-    // update method
+    /**
+     * Update method that overrides its parent -- this method updates the relevant attributes for the player
+     * @param input :
+     * @param delta :
+     * @throws SlickException
+     */
     public void update(Input input ,int delta) throws SlickException{
         // only update the player if it exists
         if(!getExistState()){
@@ -91,7 +104,9 @@ public class Player extends Sprite implements Shootable{
 
     }
 
-    //override the sprite render -- need to render all the lasers that the player has fired
+    /**
+     * override the sprite render -- need to render all the lasers that the player has fired
+     */
     public void render(){
         super.render();
 
@@ -101,14 +116,9 @@ public class Player extends Sprite implements Shootable{
 
     }
 
-    // override setY() -- handles the top of the screen
-    public void setY(float y){
-        // the player cannot move past the top of the screen;
-        if(y>=0 && y<=App.SCREEN_HEIGHT-getHeight()){
-            super.setY(y);
-        }
-    }
-
+    /**
+     * method to make the player shoot a laser at its current position
+     */
     public void shootLaser(){
         // create a new laser at the middle of the current location of the player
         try{
@@ -120,32 +130,84 @@ public class Player extends Sprite implements Shootable{
         }
     }
 
+    /**
+     * public method to make the player loose a life
+     * This method is called outside of the player class so that the player looses a life
+     * when it comes into contact with an enemy or a bullet
+     */
     public void looseLife(){
         if(this.numLives > 0){
             numLives--;
 
             // remove a life from the overlay
             Overlay.getOverlay().removeLife();
+
+            // set the immunity timer to 3000ms
+            setImmunityTimer(IMMUNITY_TIME);
         }
     }
 
+    /*
+    * GETTER AND SETTER METHODS FOR THE PLAYER
+     */
+
+    /**
+     * GETTER override setY() -- handles the top of the screen
+     * @param y : the y coord that is set at
+     */
+    public void setY(float y){
+        // the player cannot move past the top of the screen;
+        if(y>=0 && y<=App.SCREEN_HEIGHT-getHeight()){
+            super.setY(y);
+        }
+    }
+
+    /**
+     * Get the number of lives the player currently has
+     * @return : numLives
+     */
     public int getNumLives(){
         return numLives;
     }
+
+    /**
+     * Get the MAX NUM lives a player can have
+     * @return MAX_NUM_LIVES
+     */
     public static int getMaxNumLives(){
         return MAX_NUM_LIVES;
     }
 
+    /**
+     * Get how many ms of immunity the player currently has
+     * @return
+     */
     public int getImmunityTimer() {
         return immunityTimer;
     }
 
+    /**
+     * Set how much time of immunity the player has
+     * @param time : time in ms
+     */
     public void setImmunityTimer(int time){
         immunityTimer = time;
     }
 
+    /**
+     * Set how much time the player has increased shoot rate
+     * @param time : time in ms
+     */
     public void setShootRateTimer(int time){
         shootRateTimer = time;
+    }
+
+    /**
+     * get the how much time the player has increased shooting rate
+     * @return : time in ms
+     */
+    public int getShootRateTimer(){
+        return shootRateTimer;
     }
 
 }

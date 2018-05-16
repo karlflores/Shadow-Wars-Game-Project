@@ -2,7 +2,10 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Input;
 import java.lang.Math;
 
-public class Boss extends Enemy implements Shootable{
+/**
+ * Class representing the boss enemy
+ */
+public class Boss extends Enemy{
     private static final String ENEMY_IMG_PATH = "res/boss.png";
     private static final float YPOS_MOVE_RATE = 0.2f;
     private static final float XPOS_MOVE_RATE_START = 0.1f;
@@ -28,6 +31,12 @@ public class Boss extends Enemy implements Shootable{
 
     private boolean waiting = false;
 
+    /**
+     * CONSTRUCTOR: create the boss object
+     * @param x : Integer representing the x coord to create the boss at
+     * @param delay : Integer representing how long the boss should do nothing
+     * @throws SlickException
+     */
     public Boss(int x, int delay) throws SlickException{
         super(ENEMY_IMG_PATH,x,SCORE,delay);
 
@@ -37,6 +46,12 @@ public class Boss extends Enemy implements Shootable{
 
     }
 
+    /**
+     * Override the Enemy update method
+     * @param input : keyboard input
+     * @param delta : Integer representing the time since last update (in ms)
+     * @throws SlickException
+     */
     public void update(Input input, int delta) throws SlickException {
         super.update(input, delta);
 
@@ -115,6 +130,9 @@ public class Boss extends Enemy implements Shootable{
 
     }
 
+    /**
+     * Method to make the boss shoot a laser
+     */
     public void shootLaser(){
         // create a new laser at the middle of the current location of the player
         try{
@@ -131,12 +149,19 @@ public class Boss extends Enemy implements Shootable{
         }
     }
 
+    /**
+     * Method to decrease the health of the boss when a player shoots it
+     */
     public void decreaseHealth(){
         if(healthRemaining > 0){
             healthRemaining--;
         }
     }
 
+    /**
+     * Get the health of the boss
+     * @return : Integer representing the remaining health of the boss (in shots)
+     */
     public int getHealth(){
         return healthRemaining;
     }

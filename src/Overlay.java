@@ -1,8 +1,9 @@
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
-import java.util.Random;
-// A class that controls the overlay of the game -- including a start screen? the lives, the score on the screen
+/**
+ *A class that controls the overlay of the game -- including a start screen? the lives, the score on the screen
+ */
 public class Overlay {
     //
     private ArrayList<Life> lives = new ArrayList<>();
@@ -16,6 +17,11 @@ public class Overlay {
     private final static String SCORE_STR = "Score: ";
     private static Overlay overlay;
 
+    /**
+     * Constructor: create the overlay object
+     * @param numLives : Integer representing the number of lives the player should have
+     * @throws SlickException
+     */
     public Overlay(int numLives) throws SlickException{
         for(int i = 0; i < numLives; i++){
             // add the sprites
@@ -24,9 +30,6 @@ public class Overlay {
 
         overlay = this;
     }
-    public int getScore(){
-        return score;
-    }
 
     public void addScore(int add){
         if(add > 0){
@@ -34,6 +37,12 @@ public class Overlay {
         }
     }
 
+    /**
+     * Method to render the overlay to the screen
+     * @param gameContainer : gameContainer of the game
+     * @param g : graphics attribute of the game
+     * @throws SlickException
+     */
     public void render(GameContainer gameContainer, Graphics g) throws SlickException{
         // render the lives
         for(Life life: lives){
@@ -44,6 +53,9 @@ public class Overlay {
         g.drawString(SCORE_STR + score, TEXT_OFFSETX, TEST_OFFSETY);
     }
 
+    /**
+     * Method to remove a life from being rendered to the screen
+     */
     public void removeLife(){
         System.out.println("THISSSSSSSS");
         if(lives.size() > 0) {
@@ -52,6 +64,10 @@ public class Overlay {
         }
     }
 
+    /**
+     * Get the overlay instance
+     * @return : the overlay instance
+     */
     public static Overlay getOverlay(){
         return overlay;
     }

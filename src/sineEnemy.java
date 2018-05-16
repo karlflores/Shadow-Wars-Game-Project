@@ -2,6 +2,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Input;
 import java.lang.Math;
 
+/**
+ * Class representing the sine Enemy
+ */
 public class sineEnemy extends Enemy {
 
     private static final String ENEMY_IMG_PATH = "res/sine-enemy.png";
@@ -10,6 +13,13 @@ public class sineEnemy extends Enemy {
     private static final int AMPLITUDE = 96;
     private static final int PERIOD = 1500;
     private float xPos;
+
+    /**
+     * Update method
+     * @param input : keyboard input
+     * @param delta : Integer -- time in ms since the last screen update
+     * @throws SlickException
+     */
     public sineEnemy(float x,int delay) throws SlickException{
         super(ENEMY_IMG_PATH,x,SCORE,delay);
 
@@ -17,6 +27,12 @@ public class sineEnemy extends Enemy {
         xPos = getX();
     }
 
+    /**
+     * Update method
+     * @param input : keyboard input
+     * @param delta : Integer -- time in ms since the last screen update
+     * @throws SlickException
+     */
     public void update(Input input, int delta) throws  SlickException{
         super.update(input,delta);
         // System.out.println(offset());
@@ -27,7 +43,10 @@ public class sineEnemy extends Enemy {
         // update the x location of the image
     }
 
-    // calculate the offset of the xPos for the sine enemy
+    /**
+     * calculate the offset of the xPos for the sine enemy
+     * @return : Float -- the offset of the enemy
+     */
     private float offset(){
         float inner = (float)(2*Math.PI)/PERIOD;
         inner*=World.getWorld().getTime()-getDelay();
