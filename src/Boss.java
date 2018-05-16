@@ -20,7 +20,9 @@ public class Boss extends Enemy{
     private static final int SCORE = 5000;
     private static final int TOTAL_SHOOTING_TIME = 3000;
     private static final int SHOOTING_INTERVAL = 200;
-    private static final int[] WAIT_ARR = {5000,2000};
+
+    private static final int WAIT_5000 = 5000;
+    private static final int WAIT_2000 = 2000;
     private static final int[] LASER_OFFSET_POS = {-97,-74,74,94};
     private int healthRemaining = 60;
 
@@ -55,6 +57,7 @@ public class Boss extends Enemy{
     public void update(Input input, int delta) throws SlickException {
         super.update(input, delta);
 
+        // tolerance for equality
         float EPS  = 1f;
 
         // if we have not passed the delay period, then we do nothing else
@@ -63,7 +66,7 @@ public class Boss extends Enemy{
         }
 
         // for the first 5000 seconds, just update the counter
-        if(behaviourTimer < 5000) {
+        if(behaviourTimer < WAIT_5000) {
             behaviourTimer+= delta;
             waitTimer = 0;
             xPosTo = World.getRandomInt(XPOS_MIN + this.getWidth()/2, XPOS_MAX - this.getWidth()/2);
@@ -71,9 +74,8 @@ public class Boss extends Enemy{
             if(getY() < YPOS_THRESH){
                 setY(getY() + delta * YPOS_MOVE_RATE);
             }
-            // System.out.println(behaviourTimer);
+
         }else{
-            // System.out.println(xPosTo + " " + getX());
             // once we have done waited 5000ms we can step through the rest of the loop
             // we can move towards the x position now
 
@@ -91,9 +93,8 @@ public class Boss extends Enemy{
             }else {
                 waitTimer+=delta;
 
-                // System.out.println(waitTimer);
                 // if we have reached 2000ms then we can pick another x position
-                if (waitTimer > 2000) {
+                if (waitTimer > WAIT_2000) {
 
                     // start to move to the next x location
                     if (getX() > xPosTo) {
@@ -103,7 +104,7 @@ public class Boss extends Enemy{
                     }
                     // we should fire every 200ms
                     // only shoot for 3000ms
-                    if (waitTimer < 2000 + 3000) {
+                    if (waitTimer < WAIT_2000 + TOTAL_SHOOTING_TIME) {
                         timeLastFired += delta;
 
                         // ensure that we only fire once every 200 ms
@@ -120,14 +121,12 @@ public class Boss extends Enemy{
                         }
                     }
                 }else{
+                    // we set the xPosTo to being the second position -- this is the position we want to move to
+                    // when we are moving and shooting
                     xPosTo = xPosTo_2;
                 }
             }
-
         }
-
-
-
     }
 
     /**
@@ -139,11 +138,9 @@ public class Boss extends Enemy{
             for(int offset: LASER_OFFSET_POS) {
                 enemyLaser tempLaser = new enemyLaser(getX() + getWidth() / 2 + offset,
                         getY() + getHeight()/2);
-                
                 // add the laser to the world
                 World.getWorld().addSprite(tempLaser);
             }
-
         }catch(SlickException e){
             e.printStackTrace();
         }
