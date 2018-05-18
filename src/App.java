@@ -70,7 +70,7 @@ public class App extends BasicGame {
 
         // if escape is hit we exit the game
         if(input.isKeyDown(Input.KEY_ESCAPE)){
-            gc.exit();
+           gc.exit();
         }
     }
 

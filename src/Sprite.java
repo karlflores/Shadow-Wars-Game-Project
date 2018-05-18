@@ -61,11 +61,6 @@ public abstract class Sprite {
         bb.setY(y);
         // each of the sub classes will have an update method that overrides this method;
 
-        /*
-        For all updates if we want to make sure that it updates by x pixels per millisecond.
-        Since delta is the number of ms since the last frame update therefore x*delta is the
-        number pixels it should move on this update
-         */
         // update the timer -- delta is the number of ms since the last update
         timeExist+=delta;
 	}

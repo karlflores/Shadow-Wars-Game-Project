@@ -37,10 +37,11 @@ public class sineEnemy extends Enemy {
         super.update(input,delta);
         // System.out.println(offset());
         if(getTimeExists() > getDelay()) {
+            // calculate the offset and add it to the current x position
             setX(xPos + offset());
-            setY(getY()+MOVE_RATE*delta);
+            // update the y position
+            setY(getY() + MOVE_RATE * delta);
         }
-        // update the x location of the image
     }
 
     /**
@@ -49,6 +50,7 @@ public class sineEnemy extends Enemy {
      */
     private float offset(){
         float inner = (float)(2*Math.PI)/PERIOD;
+        // get how long the game has been running for and calculate the offset
         inner*=World.getWorld().getTime()-getDelay();
 
         return (float)(AMPLITUDE*Math.sin(inner));

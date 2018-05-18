@@ -9,6 +9,10 @@ import java.io.IOException;
 
 /**
  * Class that models the world of the game
+ *
+ * NOTE: Changed the implementation of the background scrolling to be the
+ * same that is in the sample part A answer. This uses exactly the same code
+ * as that one.
  */
 public class World {
     //BACKGROUND DATA
@@ -233,18 +237,25 @@ public class World {
 
     /**
      * Method to create all the enemies at the start of the game
+     * * Read in the enemies.txt file to create the enemies
      * @throws SlickException
      */
     private void createEnemies() throws SlickException{
         try (BufferedReader br = new BufferedReader(new FileReader(WAVES_SRC))){
-            String txt;
-            while((txt = br.readLine())!= null){
+
+            // store a line of the enemy text file to process
+            String line;
+            // read each line of the input file
+            while((line = br.readLine())!= null){
 
                 // skip over the comment lines
-                if(txt.contains("#")){
-                    txt = br.readLine();
+                if(line.contains("#")){
+                    line = br.readLine();
                 }
-                processInputLine(txt);
+
+                // when we have the line, we need to process the line
+                // this takes care of creating the enemy
+                processInputLine(line);
             }
         }catch(IOException e){
             e.printStackTrace();
@@ -253,16 +264,19 @@ public class World {
     }
 
     /**
-     * Helper method process the line of the enemies file
+     * Helper method process a line of the enemies file
      * @param line : a line from the enemies.txt file
      * @throws SlickException
      */
     private void processInputLine(String line) throws SlickException{
 	    String[] input;
 	    String className;
+
+	    // integers to store the values that we read in
 	    int x;
 	    int delay;
 
+        // split the line via the delimiter
 	    input = line.split(",");
 
 	    // if the length of the input is wrong, then do nothing
@@ -270,14 +284,12 @@ public class World {
 	        return;
         }
 
-        // else we assume that the line is in the correct format
+        // else, we assume that the line is in the correct format
         className = input[0];
 	    x = Integer.parseInt(input[1]);
 	    delay = Integer.parseInt(input[2]);
 
-	    System.out.println(className + " "+ x +" "+ delay);
-
-        // might need to switch to a switch statement here ---
+        // create the enemy based on the input
         if(className.equals("BasicEnemy")){
             addSprite(new basicEnemy(x,delay));
         }else if(className.equals("SineEnemy")){
@@ -299,22 +311,23 @@ public class World {
      * @throws SlickException
      */
     private Powerup createPowerup(float x, float y) throws SlickException{
-	    int target = 5;
-	    int result = World.getRandomInt(0,10);
-        // System.out.println(result);
+	    int target = 10;
+
+	    // generate a random number between 0-19 -- if it matches the target
+        // generate a sprite
+	    int result = World.getRandomInt(0,19);
 	    // 5% chance of creating a power up
 	    if(result == target){
+	        // 1/2 chance of generating a shield or shot speed power up
 	        result = World.getRandomInt(0,2);
-	        // System.out.println(result);
 	        // if 0 -- create the shield 1 -- create the shotSpeed powerup
 	        if(result == 0){
-
                 return new Shield(x,y);
             }else{
 	            return new shotSpeed(x,y);
             }
         }
-
+        // else we do not create a powerup sprite
         return null;
     }
 

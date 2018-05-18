@@ -5,7 +5,7 @@ import org.newdawn.slick.Input;
 import java.util.ArrayList;
 
 /**
- * This class is the Implementation of the player class
+ * This class handles the Implementation of the player
  */
 public class Player extends Sprite{
 
@@ -18,11 +18,14 @@ public class Player extends Sprite{
     private static final int MAX_NUM_LIVES = 3;
     private static final int IMMUNITY_TIME = 3000;
     private int numLives = 3;
+
+    // power up data
     private int lastTimeShot = 0;
     private int powerupTimer = 0;
     private int shootRate = INIT_SHOOT_RATE;
     private int shootRateTimer = 0;
     private int immunityTimer = IMMUNITY_TIME;
+
     private Image shield;
 
     /**
@@ -137,12 +140,13 @@ public class Player extends Sprite{
      */
     public void looseLife(){
         if(this.numLives > 0){
+            // decrease the number of lives this player has
             numLives--;
 
             // remove a life from the overlay
             Overlay.getOverlay().removeLife();
 
-            // set the immunity timer to 3000ms
+            // set the immunity timer to 3000ms -- ensure that it has a shield
             setImmunityTimer(IMMUNITY_TIME);
         }
     }
@@ -153,7 +157,7 @@ public class Player extends Sprite{
 
     /**
      * GETTER override setY() -- handles the top of the screen
-     * @param y : the y coord that is set at
+     * @param y : the y coord the player should be set to
      */
     public void setY(float y){
         // the player cannot move past the top of the screen;

@@ -8,13 +8,13 @@ import java.lang.Math;
 public class Boss extends Enemy{
     private static final String ENEMY_IMG_PATH = "res/boss.png";
     private static final float YPOS_MOVE_RATE = 0.2f;
-    private static final float XPOS_MOVE_RATE_START = 0.1f;
+    private static final float XPOS_MOVE_RATE_START = 0.2f;
     private static final float XPOS_MOVE_RATE_SHOOT = 0.1f;
     private static final int XPOS_MIN = 128;
     private static final int XPOS_MAX = 896;
     private static final int YPOS_THRESH = 72;
-    private float xPosTo = 512;
-    private float xPosTo_2 = 512;
+    private float randXPos = 512;
+    private float randXPosShoot = 512;
 
 
     private static final int SCORE = 5000;
@@ -31,8 +31,6 @@ public class Boss extends Enemy{
     private int timeLastFired = 0;
     private int waitTimer = 0;
 
-    private boolean waiting = false;
-
     /**
      * CONSTRUCTOR: create the boss object
      * @param x : Integer representing the x coord to create the boss at
@@ -43,7 +41,7 @@ public class Boss extends Enemy{
         super(ENEMY_IMG_PATH,x,SCORE,delay);
 
         // set the initial location value
-        xPosTo = World.getRandomInt(XPOS_MIN, XPOS_MAX);
+        randXPos = World.getRandomInt(XPOS_MIN, XPOS_MAX);
         setY(getY()-getHeight());
 
     }
@@ -68,9 +66,11 @@ public class Boss extends Enemy{
         // for the first 5000 seconds, just update the counter
         if(behaviourTimer < WAIT_5000) {
             behaviourTimer+= delta;
-            waitTimer = 0;
-            xPosTo = World.getRandomInt(XPOS_MIN + this.getWidth()/2, XPOS_MAX - this.getWidth()/2);
-            xPosTo_2 = World.getRandomInt(XPOS_MIN + this.getWidth()/2, XPOS_MAX - this.getWidth()/2);
+            waitTimer = 0 ;
+            randXPos = World.getRandomInt(XPOS_MIN + this.getWidth()/2, XPOS_MAX - this.getWidth()/2);
+            randXPosShoot = World.getRandomInt(XPOS_MIN + this.getWidth()/2, XPOS_MAX - this.getWidth()/2);
+
+            System.out.println(randXPos+randXPosShoot);
             if(getY() < YPOS_THRESH){
                 setY(getY() + delta * YPOS_MOVE_RATE);
             }
@@ -81,13 +81,14 @@ public class Boss extends Enemy{
 
             // we have not started to time the movement yet
             if (waitTimer == 0) {
-                if(getX() > xPosTo){
+                // move towards the set x position
+                if(getX() > randXPos){
                     setX(getX() - XPOS_MOVE_RATE_START * delta);
-                } else if(getX() < xPosTo) {
+                } else if(getX() < randXPos) {
                     setX(getX() + XPOS_MOVE_RATE_START * delta);
                 }
                 // if we have reached this x Position -- we need to wait 2000ms
-                if (Math.abs(getX() - xPosTo) < EPS) {
+                if (Math.abs(getX() - randXPos) < EPS) {
                     waitTimer += delta;
                 }
             }else {
@@ -97,10 +98,10 @@ public class Boss extends Enemy{
                 if (waitTimer > WAIT_2000) {
 
                     // start to move to the next x location
-                    if (getX() > xPosTo) {
-                        setX(getX() - XPOS_MOVE_RATE_START * delta);
-                    } else if (getX() < xPosTo) {
-                        setX(getX() + XPOS_MOVE_RATE_START * delta);
+                    if (getX() > randXPos) {
+                        setX(getX() - XPOS_MOVE_RATE_SHOOT * delta);
+                    } else if (getX() < randXPos) {
+                        setX(getX() + XPOS_MOVE_RATE_SHOOT * delta);
                     }
                     // we should fire every 200ms
                     // only shoot for 3000ms
@@ -115,15 +116,15 @@ public class Boss extends Enemy{
                     } else {
 
                         // if we are at the second location, we can reset the  behaviour timer
-                        if (Math.abs(getX() - xPosTo) < EPS) {
+                        if (Math.abs(getX() - randXPos) < EPS) {
                             // set the behaviour timer to zero so we can reset the process
                             behaviourTimer = 0;
                         }
                     }
                 }else{
-                    // we set the xPosTo to being the second position -- this is the position we want to move to
+                    // we set the randXPos to being the second position -- this is the position we want to move to
                     // when we are moving and shooting
-                    xPosTo = xPosTo_2;
+                    randXPos = randXPosShoot;
                 }
             }
         }
