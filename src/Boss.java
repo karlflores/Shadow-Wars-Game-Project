@@ -21,13 +21,12 @@ public class Boss extends Enemy{
     private static final int TOTAL_SHOOTING_TIME = 3000;
     private static final int SHOOTING_INTERVAL = 200;
 
-    private static final int WAIT_5000 = 5000;
-    private static final int WAIT_2000 = 2000;
+    private static final int INIT_WAIT_TIME = 5000;
+    private static final int SHOOT_WAIT_TIME = 2000;
     private static final int[] LASER_OFFSET_POS = {-97,-74,74,94};
     private int healthRemaining = 60;
 
     private int behaviourTimer = 0;
-    private int moveTimer = 0;
     private int timeLastFired = 0;
     private int waitTimer = 0;
 
@@ -64,13 +63,14 @@ public class Boss extends Enemy{
         }
 
         // for the first 5000 seconds, just update the counter
-        if(behaviourTimer < WAIT_5000) {
+        if(behaviourTimer < INIT_WAIT_TIME) {
             behaviourTimer+= delta;
             waitTimer = 0 ;
+
+            // generate the two random positions -- it is offset by the dimensions of the sprite image
             randXPos = World.getRandomInt(XPOS_MIN + this.getWidth()/2, XPOS_MAX - this.getWidth()/2);
             randXPosShoot = World.getRandomInt(XPOS_MIN + this.getWidth()/2, XPOS_MAX - this.getWidth()/2);
 
-            System.out.println(randXPos+randXPosShoot);
             if(getY() < YPOS_THRESH){
                 setY(getY() + delta * YPOS_MOVE_RATE);
             }
@@ -95,7 +95,7 @@ public class Boss extends Enemy{
                 waitTimer+=delta;
 
                 // if we have reached 2000ms then we can pick another x position
-                if (waitTimer > WAIT_2000) {
+                if (waitTimer > SHOOT_WAIT_TIME) {
 
                     // start to move to the next x location
                     if (getX() > randXPos) {
@@ -105,7 +105,7 @@ public class Boss extends Enemy{
                     }
                     // we should fire every 200ms
                     // only shoot for 3000ms
-                    if (waitTimer < WAIT_2000 + TOTAL_SHOOTING_TIME) {
+                    if (waitTimer < SHOOT_WAIT_TIME + TOTAL_SHOOTING_TIME) {
                         timeLastFired += delta;
 
                         // ensure that we only fire once every 200 ms

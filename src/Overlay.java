@@ -57,7 +57,7 @@ public class Overlay {
      * Method to remove a life from being rendered to the screen
      */
     public void removeLife(){
-        System.out.println("THISSSSSSSS");
+        // remove the last item in the array list -- so that we remove the right most sprite
         if(lives.size() > 0) {
             int lastIndex = lives.size() - 1;
             lives.remove(lastIndex);

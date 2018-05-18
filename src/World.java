@@ -148,7 +148,6 @@ public class World {
                         }else if(this_sprite instanceof Enemy && other_sprite instanceof Player){
 
                             // if the player is still in immunity we skip over this player
-
                             if(((Player)other_sprite).getImmunityTimer() > 0){
                                 continue;
                             }
@@ -160,6 +159,8 @@ public class World {
                             if(((Player) other_sprite).getNumLives() == 0) {
                                 gameOver = true;
                             }
+
+                            // mark the sprite for deletion
                             this_sprite.setExistState(false);
 
                         }else if(this_sprite instanceof enemyLaser && other_sprite instanceof Player){

@@ -19,7 +19,6 @@ public abstract class Powerup extends Sprite {
     public Powerup(String img, float x, float y) throws SlickException{
         // call the Sprite constructor
         super(img,x,y);
-        System.out.println("CREATED POWER-UP");
     }
 
     /**
