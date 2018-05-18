@@ -45,6 +45,7 @@ public abstract class Enemy extends Sprite {
 
     }
 
+
     /**
      * GET the score of the enemy
      * @return
